@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Orchestration-Cluster-Java-Client
+
+camunda:
+  cluster:
+    # Loaded from environment variables (for example via direnv/.envrc or shell export)
+    id: ${CAMUNDA_CLUSTER_ID}
+    region: ${CAMUNDA_CLUSTER_REGION}
+  client:
+    # Loaded from environment variables (for example via direnv/.envrc or shell export)
+    id: ${CAMUNDA_CLIENT_ID}
+    secret: ${CAMUNDA_CLIENT_SECRET}
