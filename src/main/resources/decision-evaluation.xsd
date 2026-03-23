@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://camunda.org/consulting/decision-evaluation"
+            xmlns:tns="http://camunda.org/consulting/decision-evaluation"
+            elementFormDefault="qualified">
+
+    <xsd:element name="evaluateDecisionRequest" type="tns:EvaluateDecisionRequest"/>
+    <xsd:element name="evaluateDecisionResponse" type="tns:EvaluateDecisionResponse"/>
+
+    <xsd:complexType name="EvaluateDecisionRequest">
+        <xsd:sequence>
+            <xsd:element name="decisionDefinitionId" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="decisionDefinitionKey" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="decisionVariables" type="tns:SoapDecisionVariables" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SoapDecisionVariables">
+        <xsd:sequence>
+            <xsd:element name="team" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="state" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="EvaluateDecisionResponse">
+        <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+            <xsd:element name="result" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="errorMessage" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>
+

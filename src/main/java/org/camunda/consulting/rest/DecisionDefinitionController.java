@@ -1,4 +1,4 @@
-package org.camunda.consulting;
+package org.camunda.consulting.rest;
 
 import io.camunda.client.CamundaClient;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.camunda.consulting.DecisionEvaluationService;
+import org.camunda.consulting.NTdecisionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping({"/decision-definitions", "/v2/decision-definitions"})
 @Tag(name = "Decision Definitions", description = "APIs for searching and evaluating Camunda 8 Decision Definitions (DMN)")
@@ -33,6 +32,9 @@ public class DecisionDefinitionController {
     @Autowired
     private CamundaClient camundaClient;
 
+    @Autowired
+    private DecisionEvaluationService decisionEvaluationService;
+
     @Operation(summary = "Search all decision definitions", description = "Returns a list of all deployed decision definitions from the Camunda cluster.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved decision definitions"),
@@ -41,13 +43,7 @@ public class DecisionDefinitionController {
     @GetMapping("/search")
     public Object searchAllDecisionDefinitions() {
         try {
-            // Search all decision definitions using the Camunda REST client API
-            var result = camundaClient
-                    .newDecisionDefinitionSearchRequest()
-                    .send()
-                    .join();
-
-            return result.items();
+            return decisionEvaluationService.searchAll();
         } catch (Exception e) {
             return "Error searching decision definitions: " + e.getMessage();
         }
@@ -63,14 +59,7 @@ public class DecisionDefinitionController {
             @Parameter(description = "The name of the decision definition to search for", required = true, example = "myDecisionName")
             @PathVariable String name) {
         try {
-            // Search decision definitions by name using the filter API
-            var result = camundaClient
-                    .newDecisionDefinitionSearchRequest()
-                    .filter(f -> f.name(name))
-                    .send()
-                    .join();
-
-            return result.items();
+            return decisionEvaluationService.searchByName(name);
         } catch (Exception e) {
             return "Error searching decision definitions by name: " + e.getMessage();
         }
@@ -86,24 +75,10 @@ public class DecisionDefinitionController {
             @Parameter(description = "The DMN decision definition ID to search for", required = true, example = "myDecisionId")
             @PathVariable String id) {
         try {
-            // Search decision definitions by decision definition ID
-            var result = camundaClient
-                    .newDecisionDefinitionSearchRequest()
-                    .filter(f -> f.decisionDefinitionId(id))
-                    .send()
-                    .join();
-
-            return result.items();
+            return decisionEvaluationService.searchById(id);
         } catch (Exception e) {
             return "Error searching decision definitions by ID: " + e.getMessage();
         }
-    }
-
-    @Operation(summary = "Health check", description = "Returns a simple health status for this controller.")
-    @ApiResponse(responseCode = "200", description = "Controller is healthy")
-    @GetMapping("/health")
-    public String health() {
-        return "DecisionDefinitionController is up";
     }
 
     @Operation(
@@ -122,34 +97,9 @@ public class DecisionDefinitionController {
             @RequestBody NTdecisionDTO request) {
         try {
             LOGGER.info("Received decision evaluation request for id='{}' key='{}'", request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
-
-            var decisionId = request.getDecisionDefinitionId();
-            var decisionKey = request.getDecisionDefinitionKey();
-
-            if ((decisionId == null || decisionId.isBlank()) && (decisionKey == null || decisionKey.isBlank())) {
-                return ResponseEntity.badRequest()
-                        .body("Either decisionDefinitionId or decisionDefinitionKey must be provided.");
-            }
-
-            Map<String, Object> variables = new HashMap<>();
-            if (request.getDecisionVariables() != null) {
-                variables.put("team", request.getDecisionVariables().getTeam());
-                variables.put("state", request.getDecisionVariables().getState());
-            }
-
-            var command = camundaClient.newEvaluateDecisionCommand();
-            var commandStep2 = (decisionId != null && !decisionId.isBlank())
-                    ? command.decisionId(decisionId)
-                    : decisionKey.chars().allMatch(Character::isDigit)
-                    ? command.decisionKey(Long.parseLong(decisionKey))
-                    : command.decisionId(decisionKey);
-
-            var result = commandStep2
-                    .variables(variables)
-                    .send()
-                    .join();
-
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(decisionEvaluationService.evaluate(request));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error evaluating decision definition: " + e.getMessage());
