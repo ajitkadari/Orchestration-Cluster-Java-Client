@@ -16,7 +16,6 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 - [Running the Application](#running-the-application)
 - [Swagger UI / OpenAPI Docs](#swagger-ui--openapi-docs)
 - [REST API Endpoints](#rest-api-endpoints)
-  - [Health Check](#health-check)
   - [Search Decision Definitions](#search-decision-definitions)
   - [Evaluate a Decision Definition](#evaluate-a-decision-definition)
 - [SOAP Endpoint](#soap-endpoint)
@@ -87,7 +86,9 @@ src/
 │
 └── test/
     └── java/org/camunda/consulting/
-        ├── OrchestrationClusterClientApplicationTests.java # REST endpoint tests
+        ├── OrchestrationClusterClientApplicationTests.java # Application smoke test (contextLoads)
+        ├── rest/
+        │   └── DecisionDefinitionControllerTest.java       # REST endpoint tests
         └── soap/
             └── DecisionEvaluationSoapEndpointTest.java    # SOAP endpoint tests
 ```
@@ -181,6 +182,7 @@ Once the application is running, interactive API documentation is available via 
 
 | URL | Description |
 |-----|-------------|
+| `http://localhost:8080/swagger-ui/index.html` | Interactive Swagger UI (canonical URL) |
 | `http://localhost:8080/swagger-ui.html` | Interactive Swagger UI |
 | `http://localhost:8080/v3/api-docs` | OpenAPI spec (JSON) |
 | `http://localhost:8080/v3/api-docs.yaml` | OpenAPI spec (YAML) |
@@ -192,17 +194,6 @@ The Swagger UI lets you explore and test all endpoints directly from the browser
 ## REST API Endpoints
 
 All REST endpoints are available under both `/decision-definitions` and `/v2/decision-definitions` prefixes for backward compatibility.
-
-### Health Check
-
-```
-GET /decision-definitions/health
-```
-
-**Response:**
-```
-DecisionDefinitionController is up
-```
 
 ---
 
@@ -325,7 +316,8 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 
 ### SOAP Operation
 
-- **Operation:** `evaluateDecisionRequest`
+- **Request element:** `evaluateDecisionRequest`
+- **Response element:** `evaluateDecisionResponse`
 - **Namespace:** `http://camunda.org/consulting/decision-evaluation`
 - **Port:** `/ws`
 
@@ -452,8 +444,9 @@ Tests include:
 ### Running Specific Tests
 
 ```bash
-./mvnw test -Dtest=OrchestrationClusterClientApplicationTests
+./mvnw test -Dtest=DecisionDefinitionControllerTest
 ./mvnw test -Dtest=DecisionEvaluationSoapEndpointTest
+./mvnw test -Dtest=OrchestrationClusterClientApplicationTests
 ```
 
 ---
@@ -557,7 +550,7 @@ Contributions are welcome! Please:
 
 ## License
 
-This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
+This project currently does not include a `LICENSE` file in the repository. Add one (for example Apache 2.0) before publishing or sharing externally.
 
 ---
 
