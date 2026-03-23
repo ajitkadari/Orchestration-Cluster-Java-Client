@@ -14,6 +14,7 @@ A Spring Boot REST API client for interacting with a **Camunda 8 SaaS** (Orchest
   - [Environment Variables](#environment-variables)
   - [Using direnv](#using-direnv)
 - [Running the Application](#running-the-application)
+- [Swagger UI / OpenAPI Docs](#swagger-ui--openapi-docs)
 - [REST API Endpoints](#rest-api-endpoints)
   - [Health Check](#health-check)
   - [Search Decision Definitions](#search-decision-definitions)
@@ -41,6 +42,7 @@ This application acts as a Java-based HTTP client/proxy for the Camunda 8 Orches
 | Java | 21 |
 | Spring Boot | 4.0.3 |
 | Camunda Java Client | 8.8.16 |
+| springdoc-openapi (Swagger UI) | 2.8.6 |
 | Maven | (via wrapper `mvnw`) |
 
 ---
@@ -54,6 +56,7 @@ src/
     │   ├── OrchestrationClusterClientApplication.java  # Spring Boot entry point
     │   ├── CamundaClientConfiguration.java             # CamundaClient bean configuration
     │   ├── DecisionDefinitionController.java           # REST controller (search + evaluate)
+    │   ├── OpenApiConfig.java                          # Swagger / OpenAPI UI configuration
     │   ├── NTdecisionDTO.java                          # Request DTO for evaluation endpoint
     │   └── DecisionVariables.java                      # Nested variables DTO (team, state)
     └── resources/
@@ -132,6 +135,20 @@ The recommended way to manage environment variables locally is with [direnv](htt
 ```
 
 The application starts on **http://localhost:8080** by default.
+
+---
+
+## Swagger UI / OpenAPI Docs
+
+Once the application is running, interactive API documentation is available via **Swagger UI** (provided by [springdoc-openapi](https://springdoc.org/)):
+
+| URL | Description |
+|-----|-------------|
+| `http://localhost:8080/swagger-ui.html` | Interactive Swagger UI |
+| `http://localhost:8080/v3/api-docs` | OpenAPI spec (JSON) |
+| `http://localhost:8080/v3/api-docs.yaml` | OpenAPI spec (YAML) |
+
+The Swagger UI lets you explore and test all endpoints directly from the browser without needing a separate HTTP client.
 
 ---
 
