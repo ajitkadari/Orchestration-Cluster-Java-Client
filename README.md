@@ -49,6 +49,7 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Java | 21 |
 | Spring Boot | 4.0.3 |
 | Spring Web Services | 5.0.0 |
+| Bean Validation | Hibernate Validator (via `spring-boot-starter-validation`) |
 | Camunda Java Client | 8.8.16 |
 | springdoc-openapi (Swagger UI) | 2.8.6 |
 | Maven | 3.x (via wrapper `mvnw`) |
@@ -564,6 +565,5 @@ This project currently does not include a `LICENSE` file in the repository. Add 
 
 ---
 
-**Last Updated:** March 2026  
-**Maintainer:** Camunda Consulting
+**Last Updated:** March 2026
 
