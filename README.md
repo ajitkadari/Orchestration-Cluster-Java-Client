@@ -12,7 +12,10 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
   - [Environment Variables](#environment-variables)
-  - [Using direnv](#using-direnv)
+  - [Setting Environment Variables](#setting-environment-variables)
+    - [macOS / Linux](#macos--linux)
+    - [Windows](#windows)
+  - [Using direnv (macOS / Linux)](#using-direnv-macos--linux)
 - [Running the Application](#running-the-application)
 - [Swagger UI / OpenAPI Docs](#swagger-ui--openapi-docs)
 - [REST API Endpoints](#rest-api-endpoints)
@@ -133,9 +136,91 @@ camunda:
     secret: ${CAMUNDA_CLIENT_SECRET}
 ```
 
-### Using direnv
+---
 
-The recommended way to manage environment variables locally is with [direnv](https://direnv.net/).
+### Setting Environment Variables
+
+#### macOS / Linux
+
+**Option 1 — Export in the current terminal session (temporary):**
+
+```bash
+export CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+export CAMUNDA_CLUSTER_REGION=cle-1
+export CAMUNDA_CLIENT_ID=your-client-id
+export CAMUNDA_CLIENT_SECRET=your-client-secret
+```
+
+These values are lost when the terminal session ends.
+
+**Option 2 — Persist in your shell profile (permanent):**
+
+Add the `export` lines above to your shell profile file (`~/.zshrc` for Zsh, `~/.bashrc` or `~/.bash_profile` for Bash), then reload it:
+
+```bash
+source ~/.zshrc   # or: source ~/.bashrc
+```
+
+**Option 3 — Pass inline when starting the app:**
+
+```bash
+CAMUNDA_CLUSTER_ID=xxx \
+CAMUNDA_CLUSTER_REGION=yyy \
+CAMUNDA_CLIENT_ID=aaa \
+CAMUNDA_CLIENT_SECRET=bbb \
+./mvnw clean spring-boot:run
+```
+
+---
+
+#### Windows
+
+**Option 1 — Set in the current Command Prompt session (temporary):**
+
+```cmd
+set CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+set CAMUNDA_CLUSTER_REGION=cle-1
+set CAMUNDA_CLIENT_ID=your-client-id
+set CAMUNDA_CLIENT_SECRET=your-client-secret
+```
+
+**Option 2 — Set in the current PowerShell session (temporary):**
+
+```powershell
+$env:CAMUNDA_CLUSTER_ID     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$env:CAMUNDA_CLUSTER_REGION = "cle-1"
+$env:CAMUNDA_CLIENT_ID      = "your-client-id"
+$env:CAMUNDA_CLIENT_SECRET  = "your-client-secret"
+```
+
+**Option 3 — Persist as User environment variables (permanent, GUI):**
+
+1. Open **Settings → System → About → Advanced system settings → Environment Variables**.
+2. Under **User variables**, click **New** and add each variable name and value.
+3. Click **OK**, then restart any open terminals or your IDE for the changes to take effect.
+
+**Option 4 — Persist via PowerShell (permanent, scripted):**
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_ID",     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_REGION", "cle-1",              "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_ID",      "your-client-id",     "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_SECRET",  "your-client-secret", "User")
+```
+
+Then run the application from Command Prompt or PowerShell:
+
+```cmd
+mvnw.cmd clean spring-boot:run
+```
+
+> **Note (all platforms):** If launching from an IDE (e.g., IntelliJ), the IDE may not inherit shell-level environment variables. Either configure them in the IDE's **Run/Debug Configuration → Environment variables** field, or start the application from the terminal to ensure they are correctly loaded.
+
+---
+
+### Using direnv (macOS / Linux)
+
+The recommended way to manage environment variables locally on macOS/Linux is with [direnv](https://direnv.net/). It automatically loads and unloads variables when you enter/leave the project directory.
 
 1. **Install direnv:**
    ```bash
@@ -160,7 +245,7 @@ The recommended way to manage environment variables locally is with [direnv](htt
    direnv allow .
    ```
 
-> **Note:** If launching from an IDE (e.g., IntelliJ), the IDE may not inherit the direnv environment. Run the application from the terminal using `./mvnw spring-boot:run` to ensure environment variables are correctly loaded.
+> **Note:** direnv is not available natively on Windows. Windows users should use one of the permanent variable options described above.
 
 ---
 
