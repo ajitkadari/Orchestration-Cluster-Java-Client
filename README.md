@@ -12,6 +12,7 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 - [Prerequisites](#prerequisites)
 - [Configuration](#configuration)
   - [Environment Variables](#environment-variables)
+  - [Network Access Requirements](#network-access-requirements)
   - [Setting Environment Variables](#setting-environment-variables)
     - [macOS / Linux](#macos--linux)
     - [Windows](#windows)
@@ -135,6 +136,20 @@ camunda:
     id: ${CAMUNDA_CLIENT_ID}
     secret: ${CAMUNDA_CLIENT_SECRET}
 ```
+
+---
+
+### Network Access Requirements
+
+To access Camunda 8 SaaS Orchestration APIs, your network must allow outbound access to the following endpoints:
+
+- `ZEEBE_ADDRESS`
+  - Format: `{CAMUNDA_CLUSTER_ID}.{CAMUNDA_CLUSTER_REGION}.zeebe.camunda.io:443`
+  - This value is cluster-specific.
+- `CAMUNDA_OAUTH_URL`
+  - Value: `https://login.cloud.camunda.io/oauth/token`
+  - This value is constant for the Camunda SaaS environment (not cluster-specific).
+  - This endpoint is used by the client to obtain OAuth tokens.
 
 ---
 
