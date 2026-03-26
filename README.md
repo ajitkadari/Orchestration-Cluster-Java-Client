@@ -161,7 +161,7 @@ To access Camunda 8 SaaS Orchestration APIs, your network must allow outbound ac
 
 ```bash
 export CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-export CAMUNDA_CLUSTER_REGION=cle-1
+export CAMUNDA_CLUSTER_REGION=your-cluster-region
 export CAMUNDA_CLIENT_ID=your-client-id
 export CAMUNDA_CLIENT_SECRET=your-client-secret
 ```
@@ -194,7 +194,7 @@ CAMUNDA_CLIENT_SECRET=bbb \
 
 ```cmd
 set CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-set CAMUNDA_CLUSTER_REGION=cle-1
+set CAMUNDA_CLUSTER_REGION=your-cluster-region
 set CAMUNDA_CLIENT_ID=your-client-id
 set CAMUNDA_CLIENT_SECRET=your-client-secret
 ```
@@ -203,7 +203,7 @@ set CAMUNDA_CLIENT_SECRET=your-client-secret
 
 ```powershell
 $env:CAMUNDA_CLUSTER_ID     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-$env:CAMUNDA_CLUSTER_REGION = "cle-1"
+$env:CAMUNDA_CLUSTER_REGION = "your-cluster-region"
 $env:CAMUNDA_CLIENT_ID      = "your-client-id"
 $env:CAMUNDA_CLIENT_SECRET  = "your-client-secret"
 ```
@@ -218,7 +218,7 @@ $env:CAMUNDA_CLIENT_SECRET  = "your-client-secret"
 
 ```powershell
 [System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_ID",     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "User")
-[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_REGION", "cle-1",              "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_REGION", "your-cluster-region",              "User")
 [System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_ID",      "your-client-id",     "User")
 [System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_SECRET",  "your-client-secret", "User")
 ```
@@ -250,7 +250,7 @@ The recommended way to manage environment variables locally on macOS/Linux is wi
 3. **Create a `.envrc` file** in the project root:
    ```bash
    export CAMUNDA_CLUSTER_ID=your-cluster-id
-   export CAMUNDA_CLUSTER_REGION=your-region
+   export CAMUNDA_CLUSTER_REGION=your-cluster-region
    export CAMUNDA_CLIENT_ID=your-client-id
    export CAMUNDA_CLIENT_SECRET=your-client-secret
    ```
