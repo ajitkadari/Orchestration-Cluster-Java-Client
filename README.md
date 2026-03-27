@@ -160,7 +160,7 @@ To access Camunda 8 SaaS Orchestration APIs, your network must allow outbound ac
 **Option 1 — Export in the current terminal session (temporary):**
 
 ```bash
-export CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+export CAMUNDA_CLUSTER_ID=your-cluster-id
 export CAMUNDA_CLUSTER_REGION=your-cluster-region
 export CAMUNDA_CLIENT_ID=your-client-id
 export CAMUNDA_CLIENT_SECRET=your-client-secret
@@ -179,10 +179,10 @@ source ~/.zshrc   # or: source ~/.bashrc
 **Option 3 — Pass inline when starting the app:**
 
 ```bash
-CAMUNDA_CLUSTER_ID=xxx \
-CAMUNDA_CLUSTER_REGION=yyy \
-CAMUNDA_CLIENT_ID=aaa \
-CAMUNDA_CLIENT_SECRET=bbb \
+CAMUNDA_CLUSTER_ID=your-cluster-id \
+CAMUNDA_CLUSTER_REGION=your-cluster-region \
+CAMUNDA_CLIENT_ID=your-client-id \
+CAMUNDA_CLIENT_SECRET=your-client-secret \
 ./mvnw clean spring-boot:run
 ```
 
@@ -193,7 +193,7 @@ CAMUNDA_CLIENT_SECRET=bbb \
 **Option 1 — Set in the current Command Prompt session (temporary):**
 
 ```cmd
-set CAMUNDA_CLUSTER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+set CAMUNDA_CLUSTER_ID=your-cluster-id
 set CAMUNDA_CLUSTER_REGION=your-cluster-region
 set CAMUNDA_CLIENT_ID=your-client-id
 set CAMUNDA_CLIENT_SECRET=your-client-secret
@@ -202,7 +202,7 @@ set CAMUNDA_CLIENT_SECRET=your-client-secret
 **Option 2 — Set in the current PowerShell session (temporary):**
 
 ```powershell
-$env:CAMUNDA_CLUSTER_ID     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+$env:CAMUNDA_CLUSTER_ID     = "your-cluster-id"
 $env:CAMUNDA_CLUSTER_REGION = "your-cluster-region"
 $env:CAMUNDA_CLIENT_ID      = "your-client-id"
 $env:CAMUNDA_CLIENT_SECRET  = "your-client-secret"
@@ -606,10 +606,10 @@ Could not resolve placeholder 'CAMUNDA_CLUSTER_ID' in value "${CAMUNDA_CLUSTER_I
 **Solution:**
 Ensure all required environment variables are set before starting:
 ```bash
-export CAMUNDA_CLUSTER_ID=xxx
-export CAMUNDA_CLUSTER_REGION=yyy
-export CAMUNDA_CLIENT_ID=aaa
-export CAMUNDA_CLIENT_SECRET=bbb
+export CAMUNDA_CLUSTER_ID=your-cluster-id
+export CAMUNDA_CLUSTER_REGION=your-cluster-region
+export CAMUNDA_CLIENT_ID=your-client-id
+export CAMUNDA_CLIENT_SECRET=your-client-secret
 ./mvnw spring-boot:run
 ```
 
