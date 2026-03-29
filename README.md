@@ -144,12 +144,13 @@ camunda:
 To access Camunda 8 SaaS Orchestration APIs, your network must allow outbound access to the following endpoints:
 
 - `ZEEBE_ADDRESS`
-  - Format: `{CAMUNDA_CLUSTER_ID}.{CAMUNDA_CLUSTER_REGION}.zeebe.camunda.io:443`
-  - This value is cluster-specific.
+  - To allow outbound access to a single cluster
+    - Format: `{CAMUNDA_CLUSTER_ID}.{CAMUNDA_CLUSTER_REGION}.zeebe.camunda.io:443`
+  - To allow outbound access to all clusters
+    - Format: `*.zeebe.camunda.io:443`
 - `CAMUNDA_OAUTH_URL`
   - Value: `https://login.cloud.camunda.io/oauth/token`
-  - This value is constant for the Camunda SaaS environment (not cluster-specific).
-  - This endpoint is used by the client to obtain OAuth tokens.
+  - This endpoint is used by the API client to obtain OAuth token before invoking Camunda 8 SaaS API endpoints.
 
 ---
 
