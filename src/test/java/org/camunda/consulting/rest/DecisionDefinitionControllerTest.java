@@ -1,14 +1,14 @@
 package org.camunda.consulting.rest;
 
-import io.camunda.client.CamundaClient;
 import org.camunda.consulting.DecisionEvaluationService;
-import org.camunda.consulting.DecisionVariables;
-import org.camunda.consulting.NTdecisionDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -24,17 +24,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Unit tests for DecisionDefinitionController REST endpoints.
  * Covers search and evaluate endpoints including success and error scenarios.
  */
+@ExtendWith(MockitoExtension.class)
 class DecisionDefinitionControllerTest {
 
     private MockMvc mockMvc;
+
+    @Mock
     private DecisionEvaluationService decisionEvaluationService;
+
+    @InjectMocks
+    private DecisionDefinitionController controller;
 
     @BeforeEach
     void setUp() {
-        DecisionDefinitionController controller = new DecisionDefinitionController();
-        ReflectionTestUtils.setField(controller, "camundaClient", Mockito.mock(CamundaClient.class));
-        decisionEvaluationService = Mockito.mock(DecisionEvaluationService.class);
-        ReflectionTestUtils.setField(controller, "decisionEvaluationService", decisionEvaluationService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -98,7 +100,6 @@ class DecisionDefinitionControllerTest {
 
     @Test
     void evaluateDecisionReturnsOkWhenRequestIsValid() throws Exception {
-        NTdecisionDTO request = new NTdecisionDTO("decision-123", "", new DecisionVariables("eng", "active"));
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
                 .thenReturn("{\"result\": \"approved\"}");
 

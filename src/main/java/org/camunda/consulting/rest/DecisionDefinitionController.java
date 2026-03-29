@@ -1,6 +1,5 @@
 package org.camunda.consulting.rest;
 
-import io.camunda.client.CamundaClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,9 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class DecisionDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecisionDefinitionController.class);
-
-    @Autowired
-    private CamundaClient camundaClient;
 
     @Autowired
     private DecisionEvaluationService decisionEvaluationService;
