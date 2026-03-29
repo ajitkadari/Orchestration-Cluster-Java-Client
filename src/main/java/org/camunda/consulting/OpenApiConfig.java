@@ -37,9 +37,6 @@ public class OpenApiConfig {
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")))
                 .servers(Arrays.asList(
                         new Server()
-                                .url("http://localhost:8080")
-                                .description("Local development server"),
-                        new Server()
                                 .url("https://localhost:8080")
                                 .description("Local HTTPS server")
                 ))

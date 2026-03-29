@@ -294,7 +294,7 @@ The Swagger UI lets you explore and test all endpoints directly from the browser
 
 ## REST API Endpoints
 
-All REST endpoints are available under both `/decision-definitions` and `/v2/decision-definitions` prefixes for backward compatibility.
+All REST endpoints are available under the `/decision-definitions` prefix.
 
 ---
 
@@ -303,7 +303,7 @@ All REST endpoints are available under both `/decision-definitions` and `/v2/dec
 #### Search All
 
 ```
-GET /v2/decision-definitions/search
+GET /decision-definitions/search
 ```
 
 Returns a list of all deployed decision definitions in the cluster.
@@ -326,7 +326,7 @@ Returns a list of all deployed decision definitions in the cluster.
 #### Search by Name
 
 ```
-GET /v2/decision-definitions/search/by-name/{name}
+GET /decision-definitions/search/by-name/{name}
 ```
 
 | Path Parameter | Description                        |
@@ -337,7 +337,7 @@ Returns decision definitions matching the given name.
 
 **Example:**
 ```bash
-curl http://localhost:8080/v2/decision-definitions/search/by-name/Approval%20Decision
+curl http://localhost:8080/decision-definitions/search/by-name/Approval%20Decision
 ```
 
 ---
@@ -345,7 +345,7 @@ curl http://localhost:8080/v2/decision-definitions/search/by-name/Approval%20Dec
 #### Search by Decision Definition ID
 
 ```
-GET /v2/decision-definitions/search/by-id/{id}
+GET /decision-definitions/search/by-id/{id}
 ```
 
 | Path Parameter | Description                                  |
@@ -356,7 +356,7 @@ Returns a decision definition matching the given ID.
 
 **Example:**
 ```bash
-curl http://localhost:8080/v2/decision-definitions/search/by-id/decision-1
+curl http://localhost:8080/decision-definitions/search/by-id/decision-1
 ```
 
 ---
@@ -364,7 +364,7 @@ curl http://localhost:8080/v2/decision-definitions/search/by-id/decision-1
 ### Evaluate a Decision Definition
 
 ```
-POST /v2/decision-definitions/evaluation
+POST /decision-definitions/evaluation
 Content-Type: application/json
 ```
 
@@ -613,7 +613,7 @@ export CAMUNDA_CLIENT_SECRET=your-client-secret
 ./mvnw spring-boot:run
 ```
 
-Or use direnv (see [Using direnv](#using-direnv) section).
+Or use direnv (see [Using direnv](#using-direnv-macos--linux) section).
 
 ### Swagger UI shows "Failed to fetch OpenAPI spec"
 

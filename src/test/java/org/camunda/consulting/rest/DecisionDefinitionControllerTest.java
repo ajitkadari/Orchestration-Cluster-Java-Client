@@ -43,7 +43,7 @@ class DecisionDefinitionControllerTest {
         List<String> mockResults = Arrays.asList("decision-1", "decision-2");
         Mockito.when(decisionEvaluationService.searchAll()).thenReturn(mockResults);
 
-        mockMvc.perform(get("/v2/decision-definitions/search"))
+        mockMvc.perform(get("/decision-definitions/search"))
                 .andExpect(status().isOk());
 
         Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchAll();
@@ -55,7 +55,7 @@ class DecisionDefinitionControllerTest {
         List<String> mockResults = Arrays.asList("approval-1");
         Mockito.when(decisionEvaluationService.searchByName(name)).thenReturn(mockResults);
 
-        mockMvc.perform(get("/v2/decision-definitions/search/by-name/{name}", name))
+        mockMvc.perform(get("/decision-definitions/search/by-name/{name}", name))
                 .andExpect(status().isOk());
 
         Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchByName(name);
@@ -67,7 +67,7 @@ class DecisionDefinitionControllerTest {
         List<String> mockResults = Arrays.asList("decision-123");
         Mockito.when(decisionEvaluationService.searchById(id)).thenReturn(mockResults);
 
-        mockMvc.perform(get("/v2/decision-definitions/search/by-id/{id}", id))
+        mockMvc.perform(get("/decision-definitions/search/by-id/{id}", id))
                 .andExpect(status().isOk());
 
         Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchById(id);
@@ -78,7 +78,7 @@ class DecisionDefinitionControllerTest {
         Mockito.when(decisionEvaluationService.searchAll())
                 .thenThrow(new RuntimeException("Connection error"));
 
-        mockMvc.perform(get("/v2/decision-definitions/search"))
+        mockMvc.perform(get("/decision-definitions/search"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Connection error")));
     }
@@ -89,7 +89,7 @@ class DecisionDefinitionControllerTest {
                         request.getDecisionDefinitionId() == null && request.getDecisionDefinitionKey() == null)))
                 .thenThrow(new IllegalArgumentException("Either decisionDefinitionId or decisionDefinitionKey must be provided."));
 
-        mockMvc.perform(post("/v2/decision-definitions/evaluation")
+        mockMvc.perform(post("/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest())
@@ -102,7 +102,7 @@ class DecisionDefinitionControllerTest {
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
                 .thenReturn("{\"result\": \"approved\"}");
 
-        mockMvc.perform(post("/v2/decision-definitions/evaluation")
+        mockMvc.perform(post("/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"decisionDefinitionId\": \"decision-123\", \"decisionVariables\": {\"team\": \"eng\", \"state\": \"active\"}}"))
                 .andExpect(status().isOk());
@@ -113,7 +113,7 @@ class DecisionDefinitionControllerTest {
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
                 .thenThrow(new RuntimeException("Evaluation failed"));
 
-        mockMvc.perform(post("/v2/decision-definitions/evaluation")
+        mockMvc.perform(post("/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"decisionDefinitionId\": \"decision-123\"}"))
                 .andExpect(status().isInternalServerError())

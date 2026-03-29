@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping({"/decision-definitions", "/v2/decision-definitions"})
+@RequestMapping({"/decision-definitions"})
 @Tag(name = "Decision Definitions", description = "APIs for searching and evaluating Camunda 8 Decision Definitions (DMN)")
 public class DecisionDefinitionController {
 
