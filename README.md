@@ -270,7 +270,7 @@ The recommended way to manage environment variables locally on macOS/Linux is wi
 ### Using Maven
 
 ```bash
-cd "/Users/ajit.kadari/github-local/Orchestration-Cluster-Java-Client"
+cd /path/to/your/project
 ./mvnw clean spring-boot:run
 ```
 
@@ -531,7 +531,7 @@ Nested variables object for decision input.
 ### Unit & Integration Tests
 
 ```bash
-cd "/Users/ajit.kadari/github-local/Orchestration-Cluster-Java-Client"
+cd /path/to/your/project
 ./mvnw test
 ```
 
@@ -558,7 +558,7 @@ Tests include:
 ### Full Build (with Tests)
 
 ```bash
-cd "/Users/ajit.kadari/github-local/Orchestration-Cluster-Java-Client"
+cd /path/to/your/project
 ./mvnw clean package
 ```
 
