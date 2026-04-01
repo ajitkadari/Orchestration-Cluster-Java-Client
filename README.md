@@ -50,12 +50,16 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 
 | Technology | Version |
 |---|---|
-| Java | 21 |
+| Java | 25 |
 | Spring Boot | 4.0.3 |
+| Spring Framework | 7.0.5 |
 | Spring Web Services | 5.0.0 |
-| Bean Validation | Hibernate Validator (via `spring-boot-starter-validation`) |
+| Bean Validation | Hibernate Validator 9.0.1.Final (via `spring-boot-starter-validation`) |
 | Camunda Java Client | 8.8.16 |
+| Jackson 2.x | 2.20.2 (used by SOAP endpoint; Jackson 3.x is provided by Spring Boot 4.x) |
 | springdoc-openapi (Swagger UI) | 2.8.6 |
+| JUnit Jupiter | 6.0.3 (via `spring-boot-starter-test`) |
+| Mockito | 5.20.0 (via `spring-boot-starter-test`) |
 | Maven | 3.x (via wrapper `mvnw`) |
 | WSDL4J | 1.6.3 |
 
@@ -102,7 +106,7 @@ src/
 
 ## Prerequisites
 
-- **Java 21** or later
+- **Java 25** or later
 - **Maven 3.x** (or use the included `./mvnw` wrapper)
 - A **Camunda 8 SaaS** account with:
   - A running cluster
@@ -666,5 +670,5 @@ This project currently does not include a `LICENSE` file in the repository. Add 
 
 ---
 
-**Last Updated:** March 2026
+**Last Updated:** April 2026
 
