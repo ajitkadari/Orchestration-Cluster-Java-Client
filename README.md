@@ -33,6 +33,7 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 - [Building a JAR](#building-a-jar)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
+- [Publishing to an Internal Organization Repository](#publishing-to-an-internal-organization-repository)
 - [License](#license)
 
 ---
@@ -661,6 +662,60 @@ Contributions are welcome! Please:
 3. Commit your changes (`git commit -m 'Add my feature'`).
 4. Push to the branch (`git push origin feature/my-feature`).
 5. Open a Pull Request.
+
+---
+
+## Publishing to an Internal Organization Repository
+
+Use these steps if this public repository needs to be copied into your organization's internal Git hosting platform (for example GitHub Enterprise, GitLab, or Bitbucket).
+
+### Prerequisites
+
+- You have permission to create repositories in the internal organization.
+- You can authenticate to the internal Git host (SSH key or HTTPS + token).
+- You know the internal repository URL.
+
+### Option 1: Push this local repository to a new internal repository
+
+1. Create an empty repository in your internal organization (do not initialize with README/license/gitignore).
+2. In this local project, add the internal remote:
+
+```bash
+git remote add internal git@<internal-git-host>:<org>/<repo>.git
+```
+
+3. Push your main branch to the internal remote:
+
+```bash
+git push -u internal main
+```
+
+4. Push tags (if any):
+
+```bash
+git push internal --tags
+```
+
+### Option 2: Mirror all refs to an existing internal repository
+
+Use this when you need a full mirror (all branches, tags, and refs).
+
+```bash
+git clone --mirror https://github.com/<public-org>/<public-repo>.git
+cd <public-repo>.git
+git remote set-url --push origin git@<internal-git-host>:<org>/<repo>.git
+git push --mirror
+```
+
+### Verify
+
+```bash
+git remote -v
+git ls-remote --heads internal
+git ls-remote --tags internal
+```
+
+If your default branch is not `main`, replace it with your branch name in the commands above.
 
 ---
 
