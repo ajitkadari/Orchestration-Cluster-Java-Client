@@ -57,9 +57,9 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
 | Camunda Java Client | 8.8.16 |
-| Jackson (SOAP endpoint serialization) | `com.fasterxml.jackson.databind:2.20.2` |
+| Jackson Databind | `com.fasterxml.jackson.core:jackson-databind:2.20.2` (explicitly pinned because `camunda-client-java` pulls Jackson 2.x transitively) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
-| Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0) |
+| Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0, transitively resolved) |
 | Maven | 3.x (via wrapper `mvnw`) |
 | WSDL4J | 1.6.3 |
 
@@ -97,7 +97,7 @@ src/
 │
 └── test/
     └── java/org/camunda/consulting/
-        ├── OrchestrationClusterClientApplicationTests.java # Application smoke test (contextLoads)
+        ├── OrchestrationClusterClientApplicationTests.java # Lightweight smoke test class
         ├── rest/
         │   └── DecisionDefinitionControllerTest.java       # REST endpoint tests
         └── soap/
@@ -295,7 +295,7 @@ Once the application is running, interactive API documentation is available via 
 | `http://localhost:8080/v3/api-docs` | OpenAPI spec (JSON) |
 | `http://localhost:8080/v3/api-docs.yaml` | OpenAPI spec (YAML) |
 
-The Swagger UI lets you explore and test all endpoints directly from the browser without needing a separate HTTP client.
+The Swagger UI lets you explore and test the REST endpoints directly from the browser. SOAP operations are exposed separately through the generated WSDL at `http://localhost:8080/ws/decisionEvaluation.wsdl`.
 
 ---
 
@@ -534,12 +534,18 @@ Nested variables object for decision input.
 
 ## Running Tests
 
-### Unit & Integration Tests
+### Current Test Suite
 
 ```bash
 cd /path/to/your/project
 ./mvnw test
 ```
+
+The current automated test suite is primarily unit-focused:
+
+- `DecisionDefinitionControllerTest` uses Mockito + MockMvc to exercise the REST controller mappings and response handling.
+- `DecisionEvaluationSoapEndpointTest` verifies the SOAP endpoint's success and error payload behavior.
+- `OrchestrationClusterClientApplicationTests` is a lightweight smoke test class; it does **not** bootstrap the full Spring `ApplicationContext`.
 
 ### Test Coverage
 
@@ -665,7 +671,7 @@ This project currently does not include a `LICENSE` file in the repository. Add 
 ## Additional Resources
 
 - [Camunda 8 Documentation](https://docs.camunda.io/)
-- [Camunda Java Client GitHub](https://github.com/camunda/camunda-bpm-client-java)
+- [Camunda Java Client Documentation](https://docs.camunda.io/docs/apis-tools/java-client/)
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
 - [Spring Web Services Documentation](https://spring.io/projects/spring-ws)
 - [OpenAPI 3.0 Specification](https://spec.openapis.org/oas/v3.0.3)
