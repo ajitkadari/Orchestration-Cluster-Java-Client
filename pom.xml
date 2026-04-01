@@ -17,9 +17,10 @@
         <java.version>25</java.version>
         <camunda.version>8.8.16</camunda.version>
         <springdoc.version>3.0.2</springdoc.version>
-        <!-- Jackson 2.x is used directly by the SOAP endpoint (com.fasterxml.jackson.databind.ObjectMapper).
-             Spring Boot 4.x ships Jackson 3.x (tools.jackson), so we pin Jackson 2.x explicitly
-             to keep it in sync with the version pulled in by camunda-client-java. -->
+        <!-- Spring Boot 4.x ships Jackson 3.x (tools.jackson).
+             But, camunda-client-java pulls Jackson 2.x (com.fasterxml.jackson.databind.ObjectMapper).
+             So, to keep it in sync with the version pulled in by camunda-client-java, Jackson 2.x is explicitly pinned.
+        -->
         <jackson2.version>2.20.2</jackson2.version>
     </properties>
     <dependencies>
@@ -50,9 +51,10 @@
             <version>${camunda.version}</version>
         </dependency>
 
-        <!-- ===== Jackson 2.x (used directly by DecisionEvaluationSoapEndpoint) ===== -->
-        <!-- Spring Boot 4.x auto-configures Jackson 3.x (tools.jackson). Declaring Jackson 2.x
-             explicitly ensures the correct version is used and avoids silent transitive upgrades. -->
+        <!-- ===== Jackson 2.x (pulled in by camunda-java-client) ===== -->
+        <!-- Spring Boot 4.x auto-configures Jackson 3.x (tools.jackson).
+             Declaring Jackson 2.x explicitly ensures the correct version is used and avoids silent transitive upgrades.
+        -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
