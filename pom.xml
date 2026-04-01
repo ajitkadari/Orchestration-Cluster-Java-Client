@@ -17,11 +17,6 @@
         <java.version>25</java.version>
         <camunda.version>8.8.16</camunda.version>
         <springdoc.version>3.0.2</springdoc.version>
-        <!-- Spring Boot 4.x ships Jackson 3.x (tools.jackson).
-             But, camunda-client-java pulls Jackson 2.x (com.fasterxml.jackson.databind.ObjectMapper).
-             So, to keep it in sync with the version pulled in by camunda-client-java, Jackson 2.x is explicitly pinned.
-        -->
-        <jackson2.version>2.20.2</jackson2.version>
     </properties>
     <dependencies>
 
@@ -49,17 +44,25 @@
             <groupId>io.camunda</groupId>
             <artifactId>camunda-client-java</artifactId>
             <version>${camunda.version}</version>
+            <exclusions>
+                <!-- Exclude Jackson 2.x to use Spring Boot 4.0.5's Jackson 3.x -->
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <!-- ===== Jackson 2.x (pulled in by camunda-java-client) ===== -->
-        <!-- Spring Boot 4.x auto-configures Jackson 3.x (tools.jackson).
-             Declaring Jackson 2.x explicitly ensures the correct version is used and avoids silent transitive upgrades.
-        -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson2.version}</version>
-        </dependency>
+        <!-- ===== Jackson 3.x (from Spring Boot 4.0.5) ===== -->
+        <!-- Spring Boot 4.0.5 provides Jackson 3.x via tools.jackson -->
 
         <!-- ===== JAXB / XML Binding ===== -->
         <dependency>

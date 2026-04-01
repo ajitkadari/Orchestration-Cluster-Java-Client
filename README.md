@@ -59,7 +59,7 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
 | Camunda Java Client | 8.8.16 |
-| Jackson Databind | `com.fasterxml.jackson.core:jackson-databind:2.20.2` (explicitly pinned because `camunda-client-java` pulls Jackson 2.x transitively) |
+| Jackson Databind | 3.x (provided by Spring Boot 4.0.5; Jackson 2.x is excluded from `camunda-client-java`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
 | Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0, transitively resolved) |
 | Maven | 3.x (via wrapper `mvnw`) |
