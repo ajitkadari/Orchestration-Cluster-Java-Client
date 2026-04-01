@@ -1,5 +1,7 @@
 # Orchestration Cluster Java Client
 
+**Last Updated:** April 2026
+
 A Spring Boot application that provides **REST and SOAP API endpoints** for interacting with **Camunda 8 SaaS** (Orchestration Cluster) using the official [Camunda Java Client](https://docs.camunda.io/docs/apis-tools/java-client/). It exposes endpoints for searching and evaluating DMN decision definitions.
 
 ---
@@ -124,8 +126,8 @@ The application reads the following **environment variables** at startup. These 
 
 | Environment Variable    | Description                                   | Example Value                          |
 |-------------------------|-----------------------------------------------|----------------------------------------|
-| `CAMUNDA_CLUSTER_ID`    | The UUID of your Camunda SaaS cluster         | `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` |
-| `CAMUNDA_CLUSTER_REGION`| The region where your cluster is deployed     | `cle-1`                                |
+| `CAMUNDA_CLUSTER_ID`    | The UUID of your Camunda SaaS cluster         | `your-cluster-id`                      |
+| `CAMUNDA_CLUSTER_REGION`| The region where your cluster is deployed     | `your-cluster-region`                  |
 | `CAMUNDA_CLIENT_ID`     | OAuth M2M application Client ID               | `your-client-id`                       |
 | `CAMUNDA_CLIENT_SECRET` | OAuth M2M application Client Secret           | `your-client-secret`                   |
 
@@ -224,10 +226,10 @@ $env:CAMUNDA_CLIENT_SECRET  = "your-client-secret"
 **Option 4 — Persist via PowerShell (permanent, scripted):**
 
 ```powershell
-[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_ID",     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "User")
-[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_REGION", "your-cluster-region",              "User")
-[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_ID",      "your-client-id",     "User")
-[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_SECRET",  "your-client-secret", "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_ID",     "your-cluster-id",              "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLUSTER_REGION", "your-cluster-region",         "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_ID",      "your-client-id",              "User")
+[System.Environment]::SetEnvironmentVariable("CAMUNDA_CLIENT_SECRET",  "your-client-secret",          "User")
 ```
 
 Then run the application from Command Prompt or PowerShell:
@@ -676,7 +678,4 @@ This project currently does not include a `LICENSE` file in the repository. Add 
 - [Spring Web Services Documentation](https://spring.io/projects/spring-ws)
 - [OpenAPI 3.0 Specification](https://spec.openapis.org/oas/v3.0.3)
 
----
-
-**Last Updated:** April 2026
 
