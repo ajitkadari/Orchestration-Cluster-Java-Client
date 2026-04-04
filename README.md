@@ -2,7 +2,7 @@
 
 **Last Updated:** April 2026
 
-A Spring Boot application that provides **REST and SOAP API endpoints** for interacting with **Camunda 8 SaaS** (Orchestration Cluster) using the official [Camunda Java Client](https://docs.camunda.io/docs/apis-tools/java-client/). It exposes endpoints for searching and evaluating DMN decision definitions.
+A Spring Boot application that provides **REST and SOAP API endpoints** for interacting with **Camunda 8 SaaS** (Orchestration Cluster) using the official [Camunda Java Client](https://docs.camunda.io/docs/apis-tools/java-client/). It exposes endpoints for topology retrieval, decision definition lookup, decision definition search, and DMN evaluation.
 
 ---
 
@@ -85,7 +85,7 @@ src/
 │   ├── java/org/camunda/consulting/
 │   │   ├── OrchestrationClusterClientApplication.java      # Spring Boot entry point
 │   │   ├── CamundaClientConfiguration.java               # CamundaClient bean configuration
-│   │   ├── DecisionEvaluationService.java                 # Business logic service (search & evaluate)
+│   │   ├── DecisionEvaluationService.java                 # Business logic service (topology, get, search, evaluate)
 │   │   ├── OpenApiConfig.java                             # Swagger / OpenAPI UI configuration
 │   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, Object>
 │   │   │
@@ -362,6 +362,12 @@ Content-Type: application/json
 
 Searches decision definitions using optional `page`, `sort`, and `filter` fields.
 
+Current implementation applies these request fields:
+- `page.from`, `page.limit`
+- `filter.decisionDefinitionId`, `filter.name`, `filter.decisionDefinitionKey`
+
+The example below matches the OpenAPI sample; fields outside the list above are currently accepted in the payload but not applied by service-side filtering logic.
+
 **Example Request:**
 ```json
 {
@@ -416,11 +422,11 @@ Alternative request body:
 }
 ```
 
-| Field                  | Type   | Required | Description                                                                 |
-|------------------------|--------|----------|-----------------------------------------------------------------------------|
-| `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)           |
-| `decisionDefinitionKey`| String | Either/Or| The numeric cluster key or DMN ID (used if `decisionDefinitionId` is blank) |
-| `variables`    | Object (`Map<String, Object>`) | Optional | Name/value pairs passed to the decision engine                     |
+| Field                  | Type   | Required | Description                                                               |
+|------------------------|--------|----------|---------------------------------------------------------------------------|
+| `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)         |
+| `decisionDefinitionKey`| String | Either/Or| Numeric decision definition key (or DMN ID fallback if non-numeric) when `decisionDefinitionId` is blank |
+| `variables`    | Object (`Map<String, Object>`) | Optional | Name/value pairs passed to the decision engine                            |
 
 > **Note:** Either `decisionDefinitionId` or `decisionDefinitionKey` must be provided.
 
