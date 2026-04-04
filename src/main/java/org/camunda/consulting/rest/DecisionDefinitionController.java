@@ -11,7 +11,6 @@ import org.camunda.consulting.DecisionEvaluationService;
 import org.camunda.consulting.DecisionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +27,11 @@ public class DecisionDefinitionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecisionDefinitionController.class);
 
-    @Autowired
-    private DecisionEvaluationService decisionEvaluationService;
+    private final DecisionEvaluationService decisionEvaluationService;
+
+    public DecisionDefinitionController(DecisionEvaluationService decisionEvaluationService) {
+        this.decisionEvaluationService = decisionEvaluationService;
+    }
 
     @Operation(summary = "Search all decision definitions", description = "Returns a list of all deployed decision definitions from the Camunda cluster.")
     @ApiResponses({

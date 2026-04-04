@@ -1,22 +1,25 @@
 package org.camunda.consulting;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 public class DecisionDTO implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String decisionDefinitionId;
     private String decisionDefinitionKey;
-    private DecisionVariables decisionVariables;
+    private Map<String, String> variables;
 
-	public DecisionDTO() {
-	}
+    public DecisionDTO() {
+    }
 
-    public DecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, DecisionVariables decisionVariables) {
+    public DecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, Map<String, String> variables) {
         this.decisionDefinitionId = decisionDefinitionId;
         this.decisionDefinitionKey = decisionDefinitionKey;
-        this.decisionVariables = decisionVariables;
+        this.variables = variables;
     }
 
     public String getDecisionDefinitionId() {
@@ -35,12 +38,11 @@ public class DecisionDTO implements Serializable {
         this.decisionDefinitionKey = decisionDefinitionKey;
     }
 
-    public DecisionVariables getDecisionVariables() {
-        return decisionVariables;
+    public Map<String, String> getVariables() {
+        return variables;
     }
 
-    public void setDecisionVariables(DecisionVariables decisionVariables) {
-        this.decisionVariables = decisionVariables;
+    public void setVariables(Map<String, String> variables) {
+        this.variables = variables;
     }
-
 }

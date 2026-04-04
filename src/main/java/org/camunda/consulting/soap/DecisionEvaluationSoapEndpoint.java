@@ -1,9 +1,8 @@
 package org.camunda.consulting.soap;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.camunda.consulting.DecisionEvaluationService;
-import org.camunda.consulting.DecisionVariables;
 import org.camunda.consulting.DecisionDTO;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.EvaluateDecisionResponse;
@@ -39,9 +38,9 @@ public class DecisionEvaluationSoapEndpoint {
 
         if (request.getDecisionVariables() != null) {
             Map<String, String> variableMap = new HashMap<>();
-            variableMap.put("team", request.getDecisionVariables().getTeam());
-            variableMap.put("state", request.getDecisionVariables().getState());
-            dto.setDecisionVariables(new DecisionVariables(variableMap));
+            request.getDecisionVariables().getEntries()
+                    .forEach(entry -> variableMap.put(entry.getKey(), entry.getValue()));
+            dto.setVariables(variableMap);
         }
 
         try {
@@ -56,7 +55,7 @@ public class DecisionEvaluationSoapEndpoint {
         return response;
     }
 
-    private String asJson(Object result) throws JsonProcessingException {
+    private String asJson(Object result) throws JacksonException {
         return objectMapper.writeValueAsString(result);
     }
 }

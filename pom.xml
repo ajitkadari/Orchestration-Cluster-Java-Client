@@ -45,7 +45,11 @@
             <artifactId>camunda-client-java</artifactId>
             <version>${camunda.version}</version>
             <exclusions>
-                <!-- Exclude Jackson 2.x to use Spring Boot 4.0.5's Jackson 3.x -->
+                <!--
+                  Exclude all Jackson artifacts bundled by camunda-client-java to avoid
+                  version conflicts. Jackson 2.21.x remains on the classpath via
+                  springdoc-openapi-starter-webmvc-ui and is used by this project.
+                -->
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
@@ -55,14 +59,21 @@
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>com.fasterxml.jackson.datatype</groupId>
                     <artifactId>jackson-datatype-jsr310</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.dataformat</groupId>
+                    <artifactId>jackson-dataformat-yaml</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
 
-        <!-- ===== Jackson 3.x (from Spring Boot 4.0.5) ===== -->
-        <!-- Spring Boot 4.0.5 provides Jackson 3.x via tools.jackson -->
+        <!-- ===== Jackson 2.21.x (transitively provided by springdoc-openapi) ===== -->
 
         <!-- ===== JAXB / XML Binding ===== -->
         <dependency>
@@ -79,6 +90,13 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
+            <!--
+              NOTE: springdoc-openapi 3.0.2 is compiled against com.fasterxml.jackson 2.x
+              (via swagger-core-jakarta). Excluding those artifacts would cause a
+              ClassNotFoundException at runtime. Jackson 2.21.x therefore remains on the
+              classpath for springdoc's own use; our application code uses tools.jackson
+              (Jackson 3.x) provided by spring-boot-starter-web.
+            -->
         </dependency>
 
         <!-- ===== SOAP / WSDL support ===== -->

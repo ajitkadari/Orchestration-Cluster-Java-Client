@@ -60,13 +60,16 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
 | Camunda Java Client | 8.8.16 |
-| Jackson Databind | 3.x (provided by Spring Boot 4.0.5; Jackson 2.x is excluded from `camunda-client-java`) |
+| Jackson (application code) | 3.1.0 (`tools.jackson`, via `spring-boot-starter-web`) |
+| Jackson (springdoc transitive) | 2.21.x (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
 | Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0, transitively resolved) |
 | Maven | 3.x (via wrapper `mvnw`) |
 | WSDL4J | 1.6.3 |
 
 > Note: `hibernate-validator` is not directly version-pinned in `pom.xml`; it is brought in transitively by `spring-boot-starter-validation` and version-managed by `spring-boot-starter-parent`.
+>
+> Note: This project intentionally has both Jackson namespaces on the classpath: application SOAP code imports `tools.jackson` (3.x), while springdoc 3.0.2 still uses `com.fasterxml.jackson` (2.x) transitively.
 
 ---
 
@@ -80,8 +83,7 @@ src/
 │   │   ├── CamundaClientConfiguration.java               # CamundaClient bean configuration
 │   │   ├── DecisionEvaluationService.java                 # Business logic service (search & evaluate)
 │   │   ├── OpenApiConfig.java                             # Swagger / OpenAPI UI configuration
-│   │   ├── DecisionDTO.java                               # Request DTO for evaluation endpoint
-│   │   ├── DecisionVariables.java                         # Generic decision variables DTO (map-backed)
+│   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, String>
 │   │   │
 │   │   ├── rest/
 │   │   │   └── DecisionDefinitionController.java          # REST controller (search + evaluate)
@@ -92,7 +94,8 @@ src/
 │   │       └── model/
 │   │           ├── EvaluateDecisionRequest.java           # SOAP request model
 │   │           ├── EvaluateDecisionResponse.java          # SOAP response model
-│   │           └── SoapDecisionVariables.java             # SOAP variables model
+│   │           ├── SoapDecisionVariables.java             # SOAP variables wrapper (list of entries)
+│   │           └── SoapVariableEntry.java                 # SOAP key/value variable entry
 │   │
 │   └── resources/
 │       ├── application.yaml                               # App config (reads from env vars)
@@ -386,11 +389,9 @@ Evaluates a DMN decision with the provided input variables.
 {
   "decisionDefinitionId": "myDecisionId",
   "decisionDefinitionKey": "",
-  "decisionVariables": {
-    "variables": {
-      "team": "engineering",
-      "state": "active"
-    }
+  "variables": {
+    "team": "engineering",
+    "state": "active"
   }
 }
 ```
@@ -399,8 +400,7 @@ Evaluates a DMN decision with the provided input variables.
 |------------------------|--------|----------|-----------------------------------------------------------------------------|
 | `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)           |
 | `decisionDefinitionKey`| String | Either/Or| The numeric cluster key or DMN ID (used if `decisionDefinitionId` is blank) |
-| `decisionVariables`    | Object | Optional | Wrapper object for input variables                                          |
-| `decisionVariables.variables` | Object (Map<String, String>) | Optional | Name/value pairs passed to the decision engine                      |
+| `variables`    | Object (`Map<String, String>`) | Optional | Name/value pairs passed to the decision engine                     |
 
 > **Note:** Either `decisionDefinitionId` or `decisionDefinitionKey` must be provided.
 
@@ -445,8 +445,14 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
     <dec:evaluateDecisionRequest>
       <dec:decisionDefinitionId>myDecisionId</dec:decisionDefinitionId>
       <dec:decisionVariables>
-        <dec:team>engineering</dec:team>
-        <dec:state>active</dec:state>
+        <dec:entry>
+          <dec:key>team</dec:key>
+          <dec:value>engineering</dec:value>
+        </dec:entry>
+        <dec:entry>
+          <dec:key>state</dec:key>
+          <dec:value>active</dec:value>
+        </dec:entry>
       </dec:decisionVariables>
     </dec:evaluateDecisionRequest>
   </soapenv:Body>
@@ -493,24 +499,9 @@ Request model for decision evaluation.
 {
   "decisionDefinitionId": "string (optional)",
   "decisionDefinitionKey": "string (optional)",
-  "decisionVariables": {
-    "variables": {
-      "anyInputKey": "string (optional)",
-      "anotherInputKey": "string (optional)"
-    }
-  }
-}
-```
-
-### `DecisionVariables`
-
-Map-backed variables object for decision input.
-
-```json
-{
   "variables": {
-    "team": "string",
-    "state": "string"
+    "anyInputKey": "string (optional)",
+    "anotherInputKey": "string (optional)"
   }
 }
 ```
@@ -523,8 +514,11 @@ Map-backed variables object for decision input.
   <dec:decisionDefinitionId>string</dec:decisionDefinitionId>
   <dec:decisionDefinitionKey>string</dec:decisionDefinitionKey>
   <dec:decisionVariables>
-    <dec:team>string</dec:team>
-    <dec:state>string</dec:state>
+    <dec:entry>
+      <dec:key>string</dec:key>
+      <dec:value>string</dec:value>
+    </dec:entry>
+    <!-- repeat <entry> for each variable -->
   </dec:decisionVariables>
 </dec:evaluateDecisionRequest>
 ```

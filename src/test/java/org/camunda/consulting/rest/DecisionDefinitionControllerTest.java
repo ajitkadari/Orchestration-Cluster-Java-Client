@@ -105,7 +105,7 @@ class DecisionDefinitionControllerTest {
 
         mockMvc.perform(post("/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"decisionDefinitionId\": \"decision-123\", \"decisionVariables\": {\"team\": \"eng\", \"state\": \"active\"}}"))
+                        .content("{\"decisionDefinitionId\": \"decision-123\", \"variables\": {\"team\": \"eng\", \"state\": \"active\"}}"))
                 .andExpect(status().isOk());
     }
 

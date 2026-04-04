@@ -1,12 +1,14 @@
 package org.camunda.consulting.soap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.camunda.consulting.DecisionEvaluationService;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.SoapDecisionVariables;
+import org.camunda.consulting.soap.model.SoapVariableEntry;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,8 +27,10 @@ class DecisionEvaluationSoapEndpointTest {
         EvaluateDecisionRequest request = new EvaluateDecisionRequest();
         request.setDecisionDefinitionId("decision-id");
         SoapDecisionVariables variables = new SoapDecisionVariables();
-        variables.setTeam("engineering");
-        variables.setState("active");
+        variables.setEntries(List.of(
+                new SoapVariableEntry("team", "engineering"),
+                new SoapVariableEntry("state", "active")
+        ));
         request.setDecisionVariables(variables);
 
         var response = endpoint.evaluateDecision(request);
@@ -50,4 +54,3 @@ class DecisionEvaluationSoapEndpointTest {
         assertEquals("Either decisionDefinitionId or decisionDefinitionKey must be provided.", response.getErrorMessage());
     }
 }
-

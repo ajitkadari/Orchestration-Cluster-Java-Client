@@ -1,7 +1,6 @@
 package org.camunda.consulting;
 
 import io.camunda.client.CamundaClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.Map;
 @Service
 public class DecisionEvaluationService {
 
-    @Autowired
     private final CamundaClient camundaClient;
 
     public DecisionEvaluationService(CamundaClient camundaClient) {
@@ -26,8 +24,8 @@ public class DecisionEvaluationService {
         }
 
         Map<String, Object> variables = new HashMap<>();
-        if (request.getDecisionVariables() != null && request.getDecisionVariables().getVariables() != null) {
-            variables.putAll(request.getDecisionVariables().getVariables());
+        if (request.getVariables() != null) {
+            variables.putAll(request.getVariables());
         }
 
         var command = camundaClient.newEvaluateDecisionCommand();
