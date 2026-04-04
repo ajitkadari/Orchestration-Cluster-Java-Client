@@ -390,8 +390,8 @@ Evaluates a DMN decision with the provided input variables.
   "decisionDefinitionId": "myDecisionId",
   "decisionDefinitionKey": "",
   "variables": {
-    "team": "engineering",
-    "state": "active"
+    "team": "East Regional",
+    "state": "Alabama"
   }
 }
 ```
@@ -447,11 +447,11 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
       <dec:decisionVariables>
         <dec:entry>
           <dec:key>team</dec:key>
-          <dec:value>engineering</dec:value>
+          <dec:value>East Regional</dec:value>
         </dec:entry>
         <dec:entry>
           <dec:key>state</dec:key>
-          <dec:value>active</dec:value>
+          <dec:value>Alabama</dec:value>
         </dec:entry>
       </dec:decisionVariables>
     </dec:evaluateDecisionRequest>

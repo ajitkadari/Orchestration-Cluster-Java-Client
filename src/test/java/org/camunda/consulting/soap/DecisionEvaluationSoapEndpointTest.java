@@ -28,8 +28,8 @@ class DecisionEvaluationSoapEndpointTest {
         request.setDecisionDefinitionId("decision-id");
         SoapDecisionVariables variables = new SoapDecisionVariables();
         variables.setEntries(List.of(
-                new SoapVariableEntry("team", "engineering"),
-                new SoapVariableEntry("state", "active")
+                new SoapVariableEntry("team", "East Regional"),
+                new SoapVariableEntry("state", "Alabama")
         ));
         request.setDecisionVariables(variables);
 
