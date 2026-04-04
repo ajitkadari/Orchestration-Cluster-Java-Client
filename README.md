@@ -22,6 +22,9 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 - [Running the Application](#running-the-application)
 - [Swagger UI / OpenAPI Docs](#swagger-ui--openapi-docs)
 - [REST API Endpoints](#rest-api-endpoints)
+  - [Get Cluster Topology](#get-cluster-topology)
+  - [Get a Decision Definition](#get-a-decision-definition)
+  - [Get Decision Definition XML](#get-decision-definition-xml)
   - [Search Decision Definitions](#search-decision-definitions)
   - [Evaluate a Decision Definition](#evaluate-a-decision-definition)
 - [SOAP Endpoint](#soap-endpoint)
@@ -42,7 +45,8 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
 
 This application acts as a **Java-based HTTP and SOAP client/proxy** for the Camunda 8 Orchestration Cluster. It is useful for:
 
-- **Searching deployed DMN decision definitions** by ID, name, or retrieving all definitions.
+- **Retrieving cluster topology and decision definitions** by decision definition key.
+- **Searching deployed DMN decision definitions** using filter/page criteria.
 - **Evaluating decision definitions** (DMN) with input variables and returning the result.
 - **Exposing SOAP/WSDL endpoints** for enterprise integrations requiring SOAP protocol.
 - Serving as a **reference implementation** for integrating the Camunda Java Client (`camunda-client-java`) into a Spring Boot application.
@@ -86,7 +90,7 @@ src/
 │   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, Object>
 │   │   │
 │   │   ├── rest/
-│   │   │   └── DecisionDefinitionController.java          # REST controller (search + evaluate)
+│   │   │   └── DecisionDefinitionController.java          # REST controller (topology, get, search, evaluate)
 │   │   │
 │   │   └── soap/
 │   │       ├── SoapWebServiceConfig.java                  # SOAP servlet + WSDL configuration
@@ -307,69 +311,80 @@ The Swagger UI lets you explore and test the REST endpoints directly from the br
 
 ## REST API Endpoints
 
-All REST endpoints are available under the `/decision-definitions` prefix.
+All REST endpoints are available under the `/api/camunda` prefix.
+
+---
+
+### Get Cluster Topology
+
+```
+GET /api/camunda/topology
+```
+
+Returns Camunda cluster topology information.
+
+---
+
+### Get a Decision Definition
+
+```
+GET /api/camunda/decision-definitions/{decisionDefinitionKey}
+```
+
+| Path Parameter | Description |
+|----------------|-------------|
+| `decisionDefinitionKey` | Camunda decision definition key |
+
+Returns a decision definition by key.
+
+---
+
+### Get Decision Definition XML
+
+```
+GET /api/camunda/decision-definitions/{decisionDefinitionKey}/xml
+```
+
+| Path Parameter | Description |
+|----------------|-------------|
+| `decisionDefinitionKey` | Camunda decision definition key |
+
+Returns decision definition XML by key.
 
 ---
 
 ### Search Decision Definitions
 
-#### Search All
-
 ```
-GET /decision-definitions/search
+POST /api/camunda/decision-definitions/search
+Content-Type: application/json
 ```
 
-Returns a list of all deployed decision definitions in the cluster.
+Searches decision definitions using optional `page`, `sort`, and `filter` fields.
 
-**Success Response:** `200 OK` with an array of decision definition objects.
-
-**Example Response:**
+**Example Request:**
 ```json
-[
-  {
-    "decisionDefinitionId": "decision-1",
-    "name": "Approval Decision",
-    "key": "approval"
+{
+  "page": {
+    "from": 0,
+    "limit": 100
+  },
+  "sort": [
+    {
+      "field": "decisionDefinitionKey",
+      "order": "ASC"
+    }
+  ],
+  "filter": {
+    "decisionDefinitionId": "new-hire-onboarding-workflow",
+    "name": "string",
+    "version": 0,
+    "decisionRequirementsId": "string",
+    "tenantId": "customer-service",
+    "decisionDefinitionKey": "2251799813326547",
+    "decisionRequirementsKey": "2251799813683346"
   }
-]
-```
-
----
-
-#### Search by Name
-
-```
-GET /decision-definitions/search/by-name/{name}
-```
-
-| Path Parameter | Description                        |
-|----------------|------------------------------------|
-| `name`         | The name of the decision definition |
-
-Returns decision definitions matching the given name.
-
-**Example:**
-```bash
-curl http://localhost:8080/decision-definitions/search/by-name/Approval%20Decision
-```
-
----
-
-#### Search by Decision Definition ID
-
-```
-GET /decision-definitions/search/by-id/{id}
-```
-
-| Path Parameter | Description                                  |
-|----------------|----------------------------------------------|
-| `id`           | The DMN decision definition ID (not the key) |
-
-Returns a decision definition matching the given ID.
-
-**Example:**
-```bash
-curl http://localhost:8080/decision-definitions/search/by-id/decision-1
+}
 ```
 
 ---
@@ -377,7 +392,7 @@ curl http://localhost:8080/decision-definitions/search/by-id/decision-1
 ### Evaluate a Decision Definition
 
 ```
-POST /decision-definitions/evaluation
+POST /api/camunda/decision-definitions/evaluation
 Content-Type: application/json
 ```
 
@@ -387,12 +402,17 @@ Evaluates a DMN decision with the provided input variables.
 
 ```json
 {
-  "decisionDefinitionId": "myDecisionId",
-  "decisionDefinitionKey": "",
-  "variables": {
-    "team": "East Regional",
-    "state": "Alabama"
-  }
+  "decisionDefinitionId": "1234-5678",
+  "variables": {}
+}
+```
+
+Alternative request body:
+
+```json
+{
+  "decisionDefinitionKey": "12345",
+  "variables": {}
 }
 ```
 
@@ -554,8 +574,8 @@ The current automated test suite is primarily unit-focused:
 ### Test Coverage
 
 Tests include:
-- **REST endpoint tests** for all search operations (`/search`, `/search/by-name/{name}`, `/search/by-id/{id}`)
-- **REST endpoint tests** for decision evaluation (`/evaluation`)
+- **REST endpoint tests** for topology, get by key, get XML, and search (`/api/camunda/...`)
+- **REST endpoint tests** for decision evaluation (`/api/camunda/decision-definitions/evaluation`)
 - **Error handling tests** for missing identifiers and runtime exceptions
 - **SOAP endpoint tests** for success and error scenarios
 

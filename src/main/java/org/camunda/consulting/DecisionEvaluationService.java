@@ -41,6 +41,63 @@ public class DecisionEvaluationService {
                 .join();
     }
 
+    public Object topology() {
+        return camundaClient.newTopologyRequest().send().join();
+    }
+
+    public Object getDecisionDefinition(long decisionDefinitionKey) {
+        return camundaClient.newDecisionDefinitionGetRequest(decisionDefinitionKey).send().join();
+    }
+
+    public Object getDecisionDefinitionXml(long decisionDefinitionKey) {
+        return camundaClient.newDecisionDefinitionGetXmlRequest(decisionDefinitionKey).send().join();
+    }
+
+    public Object searchDecisionDefinitions(Map<String, Object> requestBody) {
+        var searchRequest = camundaClient.newDecisionDefinitionSearchRequest();
+
+        if (requestBody == null || requestBody.isEmpty()) {
+            return searchRequest.send().join().items();
+        }
+
+        Object filterValue = requestBody.get("filter");
+        if (filterValue instanceof Map<?, ?> filter) {
+            searchRequest = searchRequest.filter(f -> {
+                Object decisionDefinitionId = filter.get("decisionDefinitionId");
+                if (decisionDefinitionId != null) {
+                    f.decisionDefinitionId(String.valueOf(decisionDefinitionId));
+                }
+
+                Object name = filter.get("name");
+                if (name != null) {
+                    f.name(String.valueOf(name));
+                }
+
+                Object decisionDefinitionKey = filter.get("decisionDefinitionKey");
+                if (decisionDefinitionKey != null) {
+                    f.decisionDefinitionKey(Long.parseLong(String.valueOf(decisionDefinitionKey)));
+                }
+            });
+        }
+
+        Object pageValue = requestBody.get("page");
+        if (pageValue instanceof Map<?, ?> page) {
+            searchRequest = searchRequest.page(p -> {
+                Object from = page.get("from");
+                if (from != null) {
+                    p.from(Integer.parseInt(String.valueOf(from)));
+                }
+
+                Object limit = page.get("limit");
+                if (limit != null) {
+                    p.limit(Integer.parseInt(String.valueOf(limit)));
+                }
+            });
+        }
+
+        return searchRequest.send().join().items();
+    }
+
     public Object searchAll() {
         return camundaClient
                 .newDecisionDefinitionSearchRequest()

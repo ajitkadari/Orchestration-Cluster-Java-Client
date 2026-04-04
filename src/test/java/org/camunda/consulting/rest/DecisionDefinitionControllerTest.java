@@ -12,18 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Unit tests for DecisionDefinitionController REST endpoints.
- * Covers search and evaluate endpoints including success and error scenarios.
- */
 @ExtendWith(MockitoExtension.class)
 class DecisionDefinitionControllerTest {
 
@@ -41,46 +34,61 @@ class DecisionDefinitionControllerTest {
     }
 
     @Test
-    void searchAllDecisionDefinitions_ReturnsOkWithResults() throws Exception {
-        List<String> mockResults = Arrays.asList("decision-1", "decision-2");
-        Mockito.when(decisionEvaluationService.searchAll()).thenReturn(mockResults);
+    void topologyReturnsOk() throws Exception {
+        Mockito.when(decisionEvaluationService.topology()).thenReturn("{\"clusterSize\": 3}");
 
-        mockMvc.perform(get("/decision-definitions/search"))
+        mockMvc.perform(get("/api/camunda/topology"))
                 .andExpect(status().isOk());
 
-        Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchAll();
+        Mockito.verify(decisionEvaluationService, Mockito.times(1)).topology();
     }
 
     @Test
-    void searchDecisionDefinitionsByName_ReturnsOkWithResults() throws Exception {
-        String name = "approvalDecision";
-        List<String> mockResults = Arrays.asList("approval-1");
-        Mockito.when(decisionEvaluationService.searchByName(name)).thenReturn(mockResults);
+    void getDecisionDefinitionReturnsOk() throws Exception {
+        long decisionDefinitionKey = 2251799813326547L;
+        Mockito.when(decisionEvaluationService.getDecisionDefinition(decisionDefinitionKey))
+                .thenReturn("{\"decisionDefinitionKey\":2251799813326547}");
 
-        mockMvc.perform(get("/decision-definitions/search/by-name/{name}", name))
+        mockMvc.perform(get("/api/camunda/decision-definitions/{decisionDefinitionKey}", decisionDefinitionKey))
                 .andExpect(status().isOk());
 
-        Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchByName(name);
+        Mockito.verify(decisionEvaluationService, Mockito.times(1)).getDecisionDefinition(decisionDefinitionKey);
     }
 
     @Test
-    void searchDecisionDefinitionsById_ReturnsOkWithResults() throws Exception {
-        String id = "decision-id-123";
-        List<String> mockResults = Arrays.asList("decision-123");
-        Mockito.when(decisionEvaluationService.searchById(id)).thenReturn(mockResults);
+    void getDecisionDefinitionXmlReturnsOk() throws Exception {
+        long decisionDefinitionKey = 2251799813326547L;
+        Mockito.when(decisionEvaluationService.getDecisionDefinitionXml(decisionDefinitionKey))
+                .thenReturn("{\"xml\":\"<definitions/>\"}");
 
-        mockMvc.perform(get("/decision-definitions/search/by-id/{id}", id))
+        mockMvc.perform(get("/api/camunda/decision-definitions/{decisionDefinitionKey}/xml", decisionDefinitionKey))
                 .andExpect(status().isOk());
 
-        Mockito.verify(decisionEvaluationService, Mockito.times(1)).searchById(id);
+        Mockito.verify(decisionEvaluationService, Mockito.times(1)).getDecisionDefinitionXml(decisionDefinitionKey);
     }
 
     @Test
-    void searchAllDecisionDefinitions_HandleError() throws Exception {
-        Mockito.when(decisionEvaluationService.searchAll())
+    void searchDecisionDefinitionsReturnsOk() throws Exception {
+        Mockito.when(decisionEvaluationService.searchDecisionDefinitions(Mockito.anyMap()))
+                .thenReturn("[]");
+
+        mockMvc.perform(post("/api/camunda/decision-definitions/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"filter\":{\"name\":\"approvalDecision\"}}"))
+                .andExpect(status().isOk());
+
+        Mockito.verify(decisionEvaluationService, Mockito.times(1))
+                .searchDecisionDefinitions(Mockito.anyMap());
+    }
+
+    @Test
+    void searchDecisionDefinitionsHandlesError() throws Exception {
+        Mockito.when(decisionEvaluationService.searchDecisionDefinitions(Mockito.anyMap()))
                 .thenThrow(new RuntimeException("Connection error"));
 
-        mockMvc.perform(get("/decision-definitions/search"))
+        mockMvc.perform(post("/api/camunda/decision-definitions/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Connection error")));
     }
@@ -91,7 +99,7 @@ class DecisionDefinitionControllerTest {
                         request.getDecisionDefinitionId() == null && request.getDecisionDefinitionKey() == null)))
                 .thenThrow(new IllegalArgumentException("Either decisionDefinitionId or decisionDefinitionKey must be provided."));
 
-        mockMvc.perform(post("/decision-definitions/evaluation")
+        mockMvc.perform(post("/api/camunda/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest())
@@ -103,9 +111,9 @@ class DecisionDefinitionControllerTest {
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
                 .thenReturn("{\"result\": \"approved\"}");
 
-        mockMvc.perform(post("/decision-definitions/evaluation")
+        mockMvc.perform(post("/api/camunda/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"decisionDefinitionId\": \"decision-123\", \"variables\": {\"team\": \"East Regional\", \"state\": \"Alabama\"}}"))
+                        .content("{\"decisionDefinitionId\": \"decision-123\", \"variables\": {\"inputA\": \"x\"}}"))
                 .andExpect(status().isOk());
     }
 
@@ -114,7 +122,7 @@ class DecisionDefinitionControllerTest {
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
                 .thenThrow(new RuntimeException("Evaluation failed"));
 
-        mockMvc.perform(post("/decision-definitions/evaluation")
+        mockMvc.perform(post("/api/camunda/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"decisionDefinitionId\": \"decision-123\"}"))
                 .andExpect(status().isInternalServerError())
