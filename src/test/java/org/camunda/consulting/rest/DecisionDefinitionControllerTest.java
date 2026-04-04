@@ -81,7 +81,7 @@ class DecisionDefinitionControllerTest {
                 .thenThrow(new RuntimeException("Connection error"));
 
         mockMvc.perform(get("/decision-definitions/search"))
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Connection error")));
     }
 
@@ -121,4 +121,3 @@ class DecisionDefinitionControllerTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Evaluation failed")));
     }
 }
-

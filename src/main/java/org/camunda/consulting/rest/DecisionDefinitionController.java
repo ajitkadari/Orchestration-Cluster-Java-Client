@@ -39,11 +39,12 @@ public class DecisionDefinitionController {
             @ApiResponse(responseCode = "500", description = "Error communicating with the Camunda cluster", content = @Content(schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/search")
-    public Object searchAllDecisionDefinitions() {
+    public ResponseEntity<?> searchAllDecisionDefinitions() {
         try {
-            return decisionEvaluationService.searchAll();
+            return ResponseEntity.ok(decisionEvaluationService.searchAll());
         } catch (Exception e) {
-            return "Error searching decision definitions: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching decision definitions: " + e.getMessage());
         }
     }
 
@@ -53,13 +54,14 @@ public class DecisionDefinitionController {
             @ApiResponse(responseCode = "500", description = "Error communicating with the Camunda cluster", content = @Content(schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/search/by-name/{name}")
-    public Object searchByName(
+    public ResponseEntity<?> searchByName(
             @Parameter(description = "The name of the decision definition to search for", required = true, example = "myDecisionName")
             @PathVariable String name) {
         try {
-            return decisionEvaluationService.searchByName(name);
+            return ResponseEntity.ok(decisionEvaluationService.searchByName(name));
         } catch (Exception e) {
-            return "Error searching decision definitions by name: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching decision definitions by name: " + e.getMessage());
         }
     }
 
@@ -69,13 +71,14 @@ public class DecisionDefinitionController {
             @ApiResponse(responseCode = "500", description = "Error communicating with the Camunda cluster", content = @Content(schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/search/by-id/{id}")
-    public Object searchById(
+    public ResponseEntity<?> searchById(
             @Parameter(description = "The DMN decision definition ID to search for", required = true, example = "myDecisionId")
             @PathVariable String id) {
         try {
-            return decisionEvaluationService.searchById(id);
+            return ResponseEntity.ok(decisionEvaluationService.searchById(id));
         } catch (Exception e) {
-            return "Error searching decision definitions by ID: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error searching decision definitions by ID: " + e.getMessage());
         }
     }
 

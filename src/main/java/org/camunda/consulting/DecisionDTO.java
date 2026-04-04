@@ -11,12 +11,12 @@ public class DecisionDTO implements Serializable {
 
     private String decisionDefinitionId;
     private String decisionDefinitionKey;
-    private Map<String, String> variables;
+    private Map<String, Object> variables;
 
     public DecisionDTO() {
     }
 
-    public DecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, Map<String, String> variables) {
+    public DecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, Map<String, Object> variables) {
         this.decisionDefinitionId = decisionDefinitionId;
         this.decisionDefinitionKey = decisionDefinitionKey;
         this.variables = variables;
@@ -38,11 +38,11 @@ public class DecisionDTO implements Serializable {
         this.decisionDefinitionKey = decisionDefinitionKey;
     }
 
-    public Map<String, String> getVariables() {
+    public Map<String, Object> getVariables() {
         return variables;
     }
 
-    public void setVariables(Map<String, String> variables) {
+    public void setVariables(Map<String, Object> variables) {
         this.variables = variables;
     }
 }

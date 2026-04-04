@@ -9,12 +9,12 @@ import jakarta.xml.bind.annotation.XmlType;
 public class SoapVariableEntry {
 
     private String key;
-    private String value;
+    private Object value;
 
     public SoapVariableEntry() {
     }
 
-    public SoapVariableEntry(String key, String value) {
+    public SoapVariableEntry(String key, Object value) {
         this.key = key;
         this.value = value;
     }
@@ -27,12 +27,11 @@ public class SoapVariableEntry {
         this.key = key;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 }
-

@@ -37,7 +37,7 @@ public class DecisionEvaluationSoapEndpoint {
         dto.setDecisionDefinitionKey(request.getDecisionDefinitionKey());
 
         if (request.getDecisionVariables() != null) {
-            Map<String, String> variableMap = new HashMap<>();
+            Map<String, Object> variableMap = new HashMap<>();
             request.getDecisionVariables().getEntries()
                     .forEach(entry -> variableMap.put(entry.getKey(), entry.getValue()));
             dto.setVariables(variableMap);

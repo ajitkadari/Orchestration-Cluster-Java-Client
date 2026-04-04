@@ -83,7 +83,7 @@ src/
 │   │   ├── CamundaClientConfiguration.java               # CamundaClient bean configuration
 │   │   ├── DecisionEvaluationService.java                 # Business logic service (search & evaluate)
 │   │   ├── OpenApiConfig.java                             # Swagger / OpenAPI UI configuration
-│   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, String>
+│   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, Object>
 │   │   │
 │   │   ├── rest/
 │   │   │   └── DecisionDefinitionController.java          # REST controller (search + evaluate)
@@ -95,7 +95,7 @@ src/
 │   │           ├── EvaluateDecisionRequest.java           # SOAP request model
 │   │           ├── EvaluateDecisionResponse.java          # SOAP response model
 │   │           ├── SoapDecisionVariables.java             # SOAP variables wrapper (list of entries)
-│   │           └── SoapVariableEntry.java                 # SOAP key/value variable entry
+│   │           └── SoapVariableEntry.java                 # SOAP key/value entry (value field is Object in Java model)
 │   │
 │   └── resources/
 │       ├── application.yaml                               # App config (reads from env vars)
@@ -400,7 +400,7 @@ Evaluates a DMN decision with the provided input variables.
 |------------------------|--------|----------|-----------------------------------------------------------------------------|
 | `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)           |
 | `decisionDefinitionKey`| String | Either/Or| The numeric cluster key or DMN ID (used if `decisionDefinitionId` is blank) |
-| `variables`    | Object (`Map<String, String>`) | Optional | Name/value pairs passed to the decision engine                     |
+| `variables`    | Object (`Map<String, Object>`) | Optional | Name/value pairs passed to the decision engine                     |
 
 > **Note:** Either `decisionDefinitionId` or `decisionDefinitionKey` must be provided.
 
@@ -500,13 +500,15 @@ Request model for decision evaluation.
   "decisionDefinitionId": "string (optional)",
   "decisionDefinitionKey": "string (optional)",
   "variables": {
-    "anyInputKey": "string (optional)",
-    "anotherInputKey": "string (optional)"
+    "anyInputKey": "string | number | boolean | object (optional)",
+    "anotherInputKey": "string | number | boolean | object (optional)"
   }
 }
 ```
 
 ### SOAP Models
+
+`SoapVariableEntry` in Java uses `value: Object`, and the current SOAP XSD (`decision-evaluation.xsd`) defines `<value>` as `xsd:anyType` to allow typed SOAP values.
 
 **EvaluateDecisionRequest**
 ```xml
@@ -516,7 +518,7 @@ Request model for decision evaluation.
   <dec:decisionVariables>
     <dec:entry>
       <dec:key>string</dec:key>
-      <dec:value>string</dec:value>
+      <dec:value><!-- xsd:anyType: string | number | boolean | etc. --></dec:value>
     </dec:entry>
     <!-- repeat <entry> for each variable -->
   </dec:decisionVariables>
