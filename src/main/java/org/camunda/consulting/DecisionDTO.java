@@ -2,7 +2,7 @@ package org.camunda.consulting;
 
 import java.io.Serializable;
 
-public class NTdecisionDTO implements Serializable {
+public class DecisionDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,10 +10,10 @@ public class NTdecisionDTO implements Serializable {
     private String decisionDefinitionKey;
     private DecisionVariables decisionVariables;
 
-	public NTdecisionDTO() {
+	public DecisionDTO() {
 	}
 
-    public NTdecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, DecisionVariables decisionVariables) {
+    public DecisionDTO(String decisionDefinitionId, String decisionDefinitionKey, DecisionVariables decisionVariables) {
         this.decisionDefinitionId = decisionDefinitionId;
         this.decisionDefinitionKey = decisionDefinitionKey;
         this.decisionVariables = decisionVariables;

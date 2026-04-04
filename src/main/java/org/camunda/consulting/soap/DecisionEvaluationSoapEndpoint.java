@@ -4,13 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.consulting.DecisionEvaluationService;
 import org.camunda.consulting.DecisionVariables;
-import org.camunda.consulting.NTdecisionDTO;
+import org.camunda.consulting.DecisionDTO;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.EvaluateDecisionResponse;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Endpoint
 public class DecisionEvaluationSoapEndpoint {
@@ -30,15 +33,15 @@ public class DecisionEvaluationSoapEndpoint {
     public EvaluateDecisionResponse evaluateDecision(@RequestPayload EvaluateDecisionRequest request) {
         EvaluateDecisionResponse response = new EvaluateDecisionResponse();
 
-        NTdecisionDTO dto = new NTdecisionDTO();
+        DecisionDTO dto = new DecisionDTO();
         dto.setDecisionDefinitionId(request.getDecisionDefinitionId());
         dto.setDecisionDefinitionKey(request.getDecisionDefinitionKey());
 
         if (request.getDecisionVariables() != null) {
-            DecisionVariables variables = new DecisionVariables();
-            variables.setTeam(request.getDecisionVariables().getTeam());
-            variables.setState(request.getDecisionVariables().getState());
-            dto.setDecisionVariables(variables);
+            Map<String, String> variableMap = new HashMap<>();
+            variableMap.put("team", request.getDecisionVariables().getTeam());
+            variableMap.put("state", request.getDecisionVariables().getState());
+            dto.setDecisionVariables(new DecisionVariables(variableMap));
         }
 
         try {
@@ -57,4 +60,3 @@ public class DecisionEvaluationSoapEndpoint {
         return objectMapper.writeValueAsString(result);
     }
 }
-

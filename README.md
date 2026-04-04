@@ -80,8 +80,8 @@ src/
 │   │   ├── CamundaClientConfiguration.java               # CamundaClient bean configuration
 │   │   ├── DecisionEvaluationService.java                 # Business logic service (search & evaluate)
 │   │   ├── OpenApiConfig.java                             # Swagger / OpenAPI UI configuration
-│   │   ├── NTdecisionDTO.java                             # Request DTO for evaluation endpoint
-│   │   ├── DecisionVariables.java                         # Nested variables DTO (team, state)
+│   │   ├── DecisionDTO.java                               # Request DTO for evaluation endpoint
+│   │   ├── DecisionVariables.java                         # Generic decision variables DTO (map-backed)
 │   │   │
 │   │   ├── rest/
 │   │   │   └── DecisionDefinitionController.java          # REST controller (search + evaluate)
@@ -387,8 +387,10 @@ Evaluates a DMN decision with the provided input variables.
   "decisionDefinitionId": "myDecisionId",
   "decisionDefinitionKey": "",
   "decisionVariables": {
-    "team": "engineering",
-    "state": "active"
+    "variables": {
+      "team": "engineering",
+      "state": "active"
+    }
   }
 }
 ```
@@ -397,9 +399,8 @@ Evaluates a DMN decision with the provided input variables.
 |------------------------|--------|----------|-----------------------------------------------------------------------------|
 | `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)           |
 | `decisionDefinitionKey`| String | Either/Or| The numeric cluster key or DMN ID (used if `decisionDefinitionId` is blank) |
-| `decisionVariables`    | Object | Optional | Input variables to pass to the decision engine                              |
-| `decisionVariables.team` | String | Optional | Team input variable                                                       |
-| `decisionVariables.state`| String | Optional| State input variable                                                       |
+| `decisionVariables`    | Object | Optional | Wrapper object for input variables                                          |
+| `decisionVariables.variables` | Object (Map<String, String>) | Optional | Name/value pairs passed to the decision engine                      |
 
 > **Note:** Either `decisionDefinitionId` or `decisionDefinitionKey` must be provided.
 
@@ -484,7 +485,7 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 
 ## Request & Response Models
 
-### `NTdecisionDTO`
+### `DecisionDTO`
 
 Request model for decision evaluation.
 
@@ -493,20 +494,24 @@ Request model for decision evaluation.
   "decisionDefinitionId": "string (optional)",
   "decisionDefinitionKey": "string (optional)",
   "decisionVariables": {
-    "team": "string (optional)",
-    "state": "string (optional)"
+    "variables": {
+      "anyInputKey": "string (optional)",
+      "anotherInputKey": "string (optional)"
+    }
   }
 }
 ```
 
 ### `DecisionVariables`
 
-Nested variables object for decision input.
+Map-backed variables object for decision input.
 
 ```json
 {
-  "team": "string",
-  "state": "string"
+  "variables": {
+    "team": "string",
+    "state": "string"
+  }
 }
 ```
 
@@ -732,5 +737,4 @@ This project currently does not include a `LICENSE` file in the repository. Add 
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
 - [Spring Web Services Documentation](https://spring.io/projects/spring-ws)
 - [OpenAPI 3.0 Specification](https://spec.openapis.org/oas/v3.0.3)
-
 

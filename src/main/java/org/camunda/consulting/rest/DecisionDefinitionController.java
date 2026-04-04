@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.camunda.consulting.DecisionEvaluationService;
-import org.camunda.consulting.NTdecisionDTO;
+import org.camunda.consulting.DecisionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ public class DecisionDefinitionController {
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Decision evaluation request containing the decision ID/key and input variables",
                     required = true)
-            @RequestBody NTdecisionDTO request) {
+            @RequestBody DecisionDTO request) {
         try {
             LOGGER.info("Received decision evaluation request for id='{}' key='{}'", request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
             return ResponseEntity.ok(decisionEvaluationService.evaluate(request));

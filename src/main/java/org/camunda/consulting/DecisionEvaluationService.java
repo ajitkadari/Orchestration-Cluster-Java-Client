@@ -17,7 +17,7 @@ public class DecisionEvaluationService {
         this.camundaClient = camundaClient;
     }
 
-    public Object evaluate(NTdecisionDTO request) {
+    public Object evaluate(DecisionDTO request) {
         String decisionId = request.getDecisionDefinitionId();
         String decisionKey = request.getDecisionDefinitionKey();
 
@@ -26,9 +26,8 @@ public class DecisionEvaluationService {
         }
 
         Map<String, Object> variables = new HashMap<>();
-        if (request.getDecisionVariables() != null) {
-            variables.put("team", request.getDecisionVariables().getTeam());
-            variables.put("state", request.getDecisionVariables().getState());
+        if (request.getDecisionVariables() != null && request.getDecisionVariables().getVariables() != null) {
+            variables.putAll(request.getDecisionVariables().getVariables());
         }
 
         var command = camundaClient.newEvaluateDecisionCommand();
@@ -70,4 +69,3 @@ public class DecisionEvaluationService {
                 .items();
     }
 }
-
