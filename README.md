@@ -426,7 +426,7 @@ Alternative request body:
 |------------------------|--------|----------|---------------------------------------------------------------------------|
 | `decisionDefinitionId` | String | Either/Or| The DMN decision ID (takes priority over `decisionDefinitionKey`)         |
 | `decisionDefinitionKey`| String | Either/Or| Numeric decision definition key (or DMN ID fallback if non-numeric) when `decisionDefinitionId` is blank |
-| `variables`    | Object (`Map<String, Object>`) | Optional | Name/value pairs passed to the decision engine                            |
+| `variables`    | Object (`Map<String, Object>`) | Optional | Name/value pairs passed to the decision engine; keys must be strings      |
 
 > **Note:** Either `decisionDefinitionId` or `decisionDefinitionKey` must be provided.
 
@@ -520,6 +520,8 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 ### `DecisionDTO`
 
 Request model for decision evaluation.
+
+`variables` is represented in Java as `Map<String, Object>`, so each variable name (map key) must be a string.
 
 ```json
 {
