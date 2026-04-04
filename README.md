@@ -522,14 +522,15 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 Request model for decision evaluation.
 
 `variables` is represented in Java as `Map<String, Object>`, so each variable name (map key) must be a string.
+Use a standard JSON object of key-value pairs (for example, `"key": "value"`).
 
 ```json
 {
-  "decisionDefinitionId": "string (optional)",
-  "decisionDefinitionKey": "string (optional)",
+  "decisionDefinitionId": "string",
+  "decisionDefinitionKey": "string",
   "variables": {
-    "anyInputKey": "string | number | boolean | object (optional)",
-    "anotherInputKey": "string | number | boolean | object (optional)"
+    "firstInputKey": "firstInputValue",
+    "secondInputKey": "secondInputValue",
   }
 }
 ```
