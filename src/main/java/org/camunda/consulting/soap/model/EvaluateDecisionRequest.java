@@ -10,7 +10,7 @@ import jakarta.xml.bind.annotation.XmlType;
 @XmlType(name = "EvaluateDecisionRequest", propOrder = {
         "decisionDefinitionId",
         "decisionDefinitionKey",
-        "decisionVariables"
+        "variables"
 })
 @XmlRootElement(name = "evaluateDecisionRequest", namespace = "http://camunda.org/consulting/decision-evaluation")
 public class EvaluateDecisionRequest {
@@ -19,7 +19,7 @@ public class EvaluateDecisionRequest {
     private String decisionDefinitionKey;
 
     @XmlElement(nillable = true)
-    private SoapDecisionVariables decisionVariables;
+    private SoapDecisionVariables variables;
 
     public String getDecisionDefinitionId() {
         return decisionDefinitionId;
@@ -37,12 +37,12 @@ public class EvaluateDecisionRequest {
         this.decisionDefinitionKey = decisionDefinitionKey;
     }
 
-    public SoapDecisionVariables getDecisionVariables() {
-        return decisionVariables;
+    public SoapDecisionVariables getVariables() {
+        return variables;
     }
 
-    public void setDecisionVariables(SoapDecisionVariables decisionVariables) {
-        this.decisionVariables = decisionVariables;
+    public void setVariables(SoapDecisionVariables variables) {
+        this.variables = variables;
     }
 }
 

@@ -65,7 +65,7 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
 | Camunda Java Client | 8.8.16 |
 | Jackson (application code) | 3.1.0 (`tools.jackson`, via `spring-boot-starter-web`) |
-| Jackson (springdoc transitive) | 2.21.x (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
+| Jackson (springdoc transitive) | 2.21.2 (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
 | Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0, transitively resolved) |
 | Maven | 3.x (via wrapper `mvnw`) |
@@ -470,7 +470,7 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
   <soapenv:Body>
     <dec:evaluateDecisionRequest>
       <dec:decisionDefinitionId>myDecisionId</dec:decisionDefinitionId>
-      <dec:decisionVariables>
+      <dec:variables>
         <dec:entry>
           <dec:key>team</dec:key>
           <dec:value>East Regional</dec:value>
@@ -479,7 +479,7 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
           <dec:key>state</dec:key>
           <dec:value>Alabama</dec:value>
         </dec:entry>
-      </dec:decisionVariables>
+      </dec:variables>
     </dec:evaluateDecisionRequest>
   </soapenv:Body>
 </soapenv:Envelope>
@@ -530,7 +530,7 @@ Use a standard JSON object of key-value pairs (for example, `"key": "value"`).
   "decisionDefinitionKey": "string",
   "variables": {
     "firstInputKey": "firstInputValue",
-    "secondInputKey": "secondInputValue",
+    "secondInputKey": "secondInputValue"
   }
 }
 ```
@@ -544,13 +544,13 @@ Use a standard JSON object of key-value pairs (for example, `"key": "value"`).
 <dec:evaluateDecisionRequest>
   <dec:decisionDefinitionId>string</dec:decisionDefinitionId>
   <dec:decisionDefinitionKey>string</dec:decisionDefinitionKey>
-  <dec:decisionVariables>
+  <dec:variables>
     <dec:entry>
       <dec:key>string</dec:key>
       <dec:value><!-- xsd:anyType: string | number | boolean | etc. --></dec:value>
     </dec:entry>
     <!-- repeat <entry> for each variable -->
-  </dec:decisionVariables>
+  </dec:variables>
 </dec:evaluateDecisionRequest>
 ```
 

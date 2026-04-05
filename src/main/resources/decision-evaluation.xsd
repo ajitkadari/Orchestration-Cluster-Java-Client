@@ -11,7 +11,7 @@
         <xsd:sequence>
             <xsd:element name="decisionDefinitionId" type="xsd:string" minOccurs="0"/>
             <xsd:element name="decisionDefinitionKey" type="xsd:string" minOccurs="0"/>
-            <xsd:element name="decisionVariables" type="tns:SoapDecisionVariables" minOccurs="0"/>
+            <xsd:element name="variables" type="tns:SoapDecisionVariables" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
 

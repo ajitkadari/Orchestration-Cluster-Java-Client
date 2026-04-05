@@ -31,7 +31,7 @@ class DecisionEvaluationSoapEndpointTest {
                 new SoapVariableEntry("team", "East Regional"),
                 new SoapVariableEntry("state", "Alabama")
         ));
-        request.setDecisionVariables(variables);
+        request.setVariables(variables);
 
         var response = endpoint.evaluateDecision(request);
 
