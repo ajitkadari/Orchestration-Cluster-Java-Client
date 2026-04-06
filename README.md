@@ -63,11 +63,11 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web MVC | via `spring-boot-starter-web` |
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
-| Camunda Java Client | 8.8.16 |
-| Jackson (application code) | 3.1.0 (`tools.jackson`, via `spring-boot-starter-web`) |
-| Jackson (springdoc transitive) | 2.21.2 (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
+| Camunda Java Client | 8.8.21 |
+| Jackson (application code) | 3.x (`tools.jackson`, via `spring-boot-starter-web`) |
+| Jackson (springdoc transitive) | 2.21.x (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
-| Testing | `spring-boot-starter-test` (JUnit Jupiter 6.0.3, Mockito 5.20.0, transitively resolved) |
+| Testing | `spring-boot-starter-test` (versions managed transitively by Spring Boot) |
 | Maven | 3.x (via wrapper `mvnw`) |
 | WSDL4J | 1.6.3 |
 

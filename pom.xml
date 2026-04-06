@@ -15,7 +15,7 @@
     <description>Orchestration-Cluster-Java-Client</description>
     <properties>
         <java.version>25</java.version>
-        <camunda.version>8.8.16</camunda.version>
+        <camunda.version>8.8.21</camunda.version>
         <springdoc.version>3.0.2</springdoc.version>
     </properties>
     <dependencies>
