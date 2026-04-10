@@ -95,13 +95,10 @@ public class BusinessProcessController {
                                             value = """
                                                     {
                                                       "processDefinitionId": "order-process",
-                                                      "processDefinitionKey": null,
-                                                      "version": 1,
-                                                      "tenantId": "customer-service",
                                                       "variables": {
                                                         "order": {
                                                           "customerType": "VIP",
-                                                          "total": 250.50,
+                                                          "total": 1000.00,
                                                           "items": [
                                                             {
                                                               "category": "ELECTRONICS",
@@ -121,10 +118,7 @@ public class BusinessProcessController {
                                             name = "CreateUsingProcessDefinitionKey",
                                             value = """
                                                     {
-                                                      "processDefinitionId": null,
                                                       "processDefinitionKey": "2251799813685249",
-                                                      "version": null,
-                                                      "tenantId": null,
                                                       "variables": {
                                                         "order": {
                                                           "customerType": "REGULAR",

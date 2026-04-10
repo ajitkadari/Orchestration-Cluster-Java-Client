@@ -15,11 +15,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,13 +52,10 @@ class BusinessProcessControllerTest {
                         .content("""
                                 {
                                   "processDefinitionId": "order-process",
-                                  "processDefinitionKey": null,
-                                  "version": 1,
-                                  "tenantId": "customer-service",
                                   "variables": {
                                     "order": {
                                       "customerType": "VIP",
-                                      "total": 250.50,
+                                      "total": 1000.00,
                                       "items": [
                                         {
                                           "category": "ELECTRONICS",
@@ -70,31 +70,64 @@ class BusinessProcessControllerTest {
                                   }
                                 }
                                 """))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bpmnProcessId").value("order-process"))
+                .andExpect(jsonPath("$.processDefinitionKey").isNumber())
+                .andExpect(jsonPath("$.processInstanceKey").isNumber())
+                .andExpect(jsonPath("$.tenantId").isString())
+                .andExpect(jsonPath("$.version").isNumber())
+                .andExpect(jsonPath("$.tags").isArray())
+                .andExpect(jsonPath("$.variables").value("{\"discount\":0.15,\"order\":{\"customerType\":\"VIP\",\"total\":1000.0,\"items\":[{\"category\":\"ELECTRONICS\",\"quantity\":1},{\"category\":\"ELECTRONICS\",\"quantity\":1}]}}"))
+                .andExpect(jsonPath("$.variablesAsMap.discount").value(0.15))
+                .andExpect(jsonPath("$.variablesAsMap.order.customerType").value("VIP"))
+                .andExpect(jsonPath("$.variablesAsMap.order.total").value(1000))
+                .andExpect(jsonPath("$.variablesAsMap.order.items[0].category").value("ELECTRONICS"))
+                .andExpect(jsonPath("$.variablesAsMap.order.items[0].quantity").value(1))
+                .andExpect(jsonPath("$.variablesAsMap.order.items[1].category").value("ELECTRONICS"))
+                .andExpect(jsonPath("$.variablesAsMap.order.items[1].quantity").value(1));
 
         Mockito.verify(businessProcessService, Mockito.times(1))
                 .createOrderProcessInstance(Mockito.any(OrderProcessDTO.class));
     }
 
     private ProcessInstanceResult sampleProcessInstanceResult() {
+        Map<String, Object> firstItem = new LinkedHashMap<>();
+        firstItem.put("category", "ELECTRONICS");
+        firstItem.put("quantity", 1);
+
+        Map<String, Object> secondItem = new LinkedHashMap<>();
+        secondItem.put("category", "ELECTRONICS");
+        secondItem.put("quantity", 1);
+
+        Map<String, Object> order = new LinkedHashMap<>();
+        order.put("customerType", "VIP");
+        order.put("total", 1000);
+        order.put("items", List.of(firstItem, secondItem));
+
+        Map<String, Object> variablesAsMap = new LinkedHashMap<>();
+        variablesAsMap.put("discount", 0.15);
+        variablesAsMap.put("order", order);
+
         return new ProcessInstanceResult() {
             @Override
-            public long getProcessDefinitionKey() { return 2251799813686749L; }
+            public long getProcessDefinitionKey() { return 2251799816070543L; }
 
             @Override
             public String getBpmnProcessId() { return "order-process"; }
 
             @Override
-            public int getVersion() { return 1; }
+            public int getVersion() { return 8; }
 
             @Override
-            public long getProcessInstanceKey() { return 2251799813690746L; }
+            public long getProcessInstanceKey() { return 2251799816077136L; }
 
             @Override
-            public String getVariables() { return "{}"; }
+            public String getVariables() {
+                return "{\"discount\":0.15,\"order\":{\"customerType\":\"VIP\",\"total\":1000.0,\"items\":[{\"category\":\"ELECTRONICS\",\"quantity\":1},{\"category\":\"ELECTRONICS\",\"quantity\":1}]}}";
+            }
 
             @Override
-            public Map<String, Object> getVariablesAsMap() { return Collections.emptyMap(); }
+            public Map<String, Object> getVariablesAsMap() { return variablesAsMap; }
 
             @Override
             public <T> T getVariablesAsType(Class<T> ignored) { return null; }
@@ -132,10 +165,7 @@ class BusinessProcessControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "processDefinitionId": null,
                                   "processDefinitionKey": "2251799813685249",
-                                  "version": null,
-                                  "tenantId": null,
                                   "variables": {
                                     "order": {
                                       "customerType": "REGULAR",
