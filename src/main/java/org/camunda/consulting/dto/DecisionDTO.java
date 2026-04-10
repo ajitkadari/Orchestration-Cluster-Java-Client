@@ -1,4 +1,4 @@
-package org.camunda.consulting;
+package org.camunda.consulting.dto;
 
 import java.io.Serial;
 import java.io.Serializable;

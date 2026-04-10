@@ -2,8 +2,8 @@ package org.camunda.consulting.soap;
 
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import org.camunda.consulting.DecisionEvaluationService;
-import org.camunda.consulting.DecisionDTO;
+import org.camunda.consulting.service.DecisionService;
+import org.camunda.consulting.dto.DecisionDTO;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.EvaluateDecisionResponse;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -19,10 +19,10 @@ public class DecisionEvaluationSoapEndpoint {
 
     private static final String NAMESPACE_URI = "http://camunda.org/consulting/decision-evaluation";
 
-    private final DecisionEvaluationService decisionEvaluationService;
+    private final DecisionService decisionEvaluationService;
     private final ObjectMapper objectMapper;
 
-    public DecisionEvaluationSoapEndpoint(DecisionEvaluationService decisionEvaluationService, ObjectMapper objectMapper) {
+    public DecisionEvaluationSoapEndpoint(DecisionService decisionEvaluationService, ObjectMapper objectMapper) {
         this.decisionEvaluationService = decisionEvaluationService;
         this.objectMapper = objectMapper;
     }

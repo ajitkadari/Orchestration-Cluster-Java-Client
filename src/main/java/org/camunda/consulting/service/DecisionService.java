@@ -1,17 +1,18 @@
-package org.camunda.consulting;
+package org.camunda.consulting.service;
 
 import io.camunda.client.CamundaClient;
+import org.camunda.consulting.dto.DecisionDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class DecisionEvaluationService {
+public class DecisionService {
 
     private final CamundaClient camundaClient;
 
-    public DecisionEvaluationService(CamundaClient camundaClient) {
+    public DecisionService(CamundaClient camundaClient) {
         this.camundaClient = camundaClient;
     }
 

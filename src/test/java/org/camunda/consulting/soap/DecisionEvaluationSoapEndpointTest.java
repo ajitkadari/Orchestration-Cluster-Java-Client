@@ -1,7 +1,7 @@
 package org.camunda.consulting.soap;
 
 import tools.jackson.databind.ObjectMapper;
-import org.camunda.consulting.DecisionEvaluationService;
+import org.camunda.consulting.service.DecisionService;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.SoapDecisionVariables;
 import org.camunda.consulting.soap.model.SoapVariableEntry;
@@ -19,7 +19,7 @@ class DecisionEvaluationSoapEndpointTest {
 
     @Test
     void evaluateDecisionReturnsSuccessPayloadWhenServiceSucceeds() {
-        DecisionEvaluationService service = Mockito.mock(DecisionEvaluationService.class);
+        DecisionService service = Mockito.mock(DecisionService.class);
         Mockito.when(service.evaluate(Mockito.any())).thenReturn(Map.of("decision", "approved"));
 
         DecisionEvaluationSoapEndpoint endpoint = new DecisionEvaluationSoapEndpoint(service, new ObjectMapper());
@@ -41,7 +41,7 @@ class DecisionEvaluationSoapEndpointTest {
 
     @Test
     void evaluateDecisionReturnsErrorPayloadWhenServiceFails() {
-        DecisionEvaluationService service = Mockito.mock(DecisionEvaluationService.class);
+        DecisionService service = Mockito.mock(DecisionService.class);
         Mockito.when(service.evaluate(Mockito.any()))
                 .thenThrow(new IllegalArgumentException("Either decisionDefinitionId or decisionDefinitionKey must be provided."));
 

@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.camunda.consulting.DecisionDTO;
-import org.camunda.consulting.DecisionEvaluationService;
+import org.camunda.consulting.dto.DecisionDTO;
+import org.camunda.consulting.service.DecisionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,14 +27,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/camunda")
 @Tag(name = "Camunda", description = "Camunda API proxy endpoints")
-public class DecisionDefinitionController {
+public class DecisionController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionDefinitionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionController.class);
 
-    private final DecisionEvaluationService decisionEvaluationService;
+    private final DecisionService decisionService;
 
-    public DecisionDefinitionController(DecisionEvaluationService decisionEvaluationService) {
-        this.decisionEvaluationService = decisionEvaluationService;
+    public DecisionController(DecisionService decisionEvaluationService) {
+        this.decisionService = decisionEvaluationService;
     }
 
     @Operation(summary = "Get Camunda Cluster topology", description = "Returns Camunda Cluster topology payload from the configured Camunda base URL")
@@ -45,7 +45,7 @@ public class DecisionDefinitionController {
     @GetMapping(path = "/topology", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> topology() {
         try {
-            return ResponseEntity.ok(decisionEvaluationService.topology());
+            return ResponseEntity.ok(decisionService.topology());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error retrieving topology: " + e.getMessage());
@@ -62,7 +62,7 @@ public class DecisionDefinitionController {
             @Parameter(description = "Camunda decision definition key", required = true, example = "2251799813326547")
             @PathVariable long decisionDefinitionKey) {
         try {
-            return ResponseEntity.ok(decisionEvaluationService.getDecisionDefinition(decisionDefinitionKey));
+            return ResponseEntity.ok(decisionService.getDecisionDefinition(decisionDefinitionKey));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error getting decision definition: " + e.getMessage());
@@ -79,7 +79,7 @@ public class DecisionDefinitionController {
             @Parameter(description = "Camunda decision definition key", required = true, example = "2251799813326547")
             @PathVariable long decisionDefinitionKey) {
         try {
-            return ResponseEntity.ok(decisionEvaluationService.getDecisionDefinitionXml(decisionDefinitionKey));
+            return ResponseEntity.ok(decisionService.getDecisionDefinitionXml(decisionDefinitionKey));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error getting decision definition XML: " + e.getMessage());
@@ -129,7 +129,7 @@ public class DecisionDefinitionController {
             )
             @RequestBody(required = false) Map<String, Object> requestBody) {
         try {
-            return ResponseEntity.ok(decisionEvaluationService.searchDecisionDefinitions(requestBody));
+            return ResponseEntity.ok(decisionService.searchDecisionDefinitions(requestBody));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error searching decision definitions: " + e.getMessage());
@@ -174,7 +174,7 @@ public class DecisionDefinitionController {
             @RequestBody DecisionDTO request) {
         try {
             LOGGER.info("Received decision evaluation request for id='{}' key='{}'", request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
-            return ResponseEntity.ok(decisionEvaluationService.evaluate(request));
+            return ResponseEntity.ok(decisionService.evaluate(request));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

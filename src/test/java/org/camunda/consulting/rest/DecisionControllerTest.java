@@ -1,6 +1,6 @@
 package org.camunda.consulting.rest;
 
-import org.camunda.consulting.DecisionEvaluationService;
+import org.camunda.consulting.service.DecisionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,15 +18,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class DecisionDefinitionControllerTest {
+class DecisionControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
-    private DecisionEvaluationService decisionEvaluationService;
+    private DecisionService decisionEvaluationService;
 
     @InjectMocks
-    private DecisionDefinitionController controller;
+    private DecisionController controller;
 
     @BeforeEach
     void setUp() {

@@ -2,7 +2,7 @@
 
 **Last Updated:** April 2026
 
-A Spring Boot application that provides **REST and SOAP API endpoints** for interacting with **Camunda 8 SaaS** (Orchestration Cluster) using the official [Camunda Java Client](https://docs.camunda.io/docs/apis-tools/java-client/). It exposes endpoints for topology retrieval, decision definition lookup, decision definition search, and DMN evaluation.
+A Spring Boot application that provides **REST and SOAP API endpoints** for interacting with **Camunda 8 SaaS** (Orchestration Cluster) using the official [Camunda Java Client](https://docs.camunda.io/docs/apis-tools/java-client/). It exposes endpoints for topology retrieval, decision definition lookup/search, DMN evaluation, and order process instance creation.
 
 ---
 
@@ -27,6 +27,7 @@ A Spring Boot application that provides **REST and SOAP API endpoints** for inte
   - [Get Decision Definition XML](#get-decision-definition-xml)
   - [Search Decision Definitions](#search-decision-definitions)
   - [Evaluate a Decision Definition](#evaluate-a-decision-definition)
+  - [Create Order Process Instance](#create-order-process-instance)
 - [SOAP Endpoint](#soap-endpoint)
   - [WSDL Access](#wsdl-access)
   - [SOAP Request Example](#soap-request-example)
@@ -83,15 +84,24 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 src/
 ├── main/
 │   ├── java/org/camunda/consulting/
-│   │   ├── OrchestrationClusterClientApplication.java      # Spring Boot entry point
-│   │   ├── CamundaClientConfiguration.java               # CamundaClient bean configuration
-│   │   ├── DecisionEvaluationService.java                 # Business logic service (topology, get, search, evaluate)
-│   │   ├── OpenApiConfig.java                             # Swagger / OpenAPI UI configuration
-│   │   ├── DecisionDTO.java                               # Request DTO; variables is Map<String, Object>
-│   │   │
+│   │   ├── OrchestrationApiClientApplication.java         # Spring Boot entry point
+│   │   ├── config/
+│   │   │   ├── CamundaClientConfiguration.java            # CamundaClient bean configuration
+│   │   │   └── OpenApiConfiguration.java                  # Swagger / OpenAPI configuration
+│   │   ├── dto/
+│   │   │   ├── DecisionDTO.java                           # Decision evaluation request DTO
+│   │   │   ├── OrderProcessDTO.java                       # Process creation request DTO
+│   │   │   ├── OrderDTO.java                              # Order payload DTO used under variables.order
+│   │   │   └── ItemDTO.java                               # Item payload DTO used in OrderDTO.items
+│   │   ├── enumeration/
+│   │   │   ├── CustomerType.java                          # VIP/REGULAR (case-insensitive)
+│   │   │   └── ItemCategory.java                          # ELECTRONICS/ALCOHOL/GROCERY/CLOTHING (case-insensitive)
+│   │   ├── service/
+│   │   │   ├── DecisionService.java                       # Decision/topology/search/evaluation business logic
+│   │   │   └── BusinessProcessService.java                # Order process instance creation business logic
 │   │   ├── rest/
-│   │   │   └── DecisionDefinitionController.java          # REST controller (topology, get, search, evaluate)
-│   │   │
+│   │   │   ├── DecisionController.java                    # REST controller for decision/topology APIs
+│   │   │   └── BusinessProcessController.java             # REST controller for order process instance API
 │   │   └── soap/
 │   │       ├── SoapWebServiceConfig.java                  # SOAP servlet + WSDL configuration
 │   │       ├── DecisionEvaluationSoapEndpoint.java        # SOAP endpoint implementation
@@ -107,9 +117,10 @@ src/
 │
 └── test/
     └── java/org/camunda/consulting/
-        ├── OrchestrationClusterClientApplicationTests.java # Lightweight smoke test class
+        ├── OrchestrationApiClientApplicationTests.java     # Lightweight smoke test class
         ├── rest/
-        │   └── DecisionDefinitionControllerTest.java       # REST endpoint tests
+        │   ├── DecisionControllerTest.java                 # REST endpoint tests for DecisionController APIs
+        │   └── BusinessProcessControllerTest.java          # REST endpoint tests for order process API
         └── soap/
             └── DecisionEvaluationSoapEndpointTest.java    # SOAP endpoint tests
 ```
@@ -438,6 +449,110 @@ Alternative request body:
 
 ---
 
+### Create Order Process Instance
+
+```
+POST /api/camunda/process-instances/order-process
+Content-Type: application/json
+```
+
+Creates an order process instance using either `processDefinitionId` or `processDefinitionKey`.
+
+**Example Request (ID-based):**
+
+```json
+{
+  "processDefinitionId": "order-process",
+  "processDefinitionKey": null,
+  "version": 1,
+  "tenantId": "customer-service",
+  "variables": {
+    "order": {
+      "customerType": "VIP",
+      "total": 250.50,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 2
+        },
+        {
+          "category": "GROCERY",
+          "quantity": 5
+        }
+      ]
+    }
+  }
+}
+```
+
+**Example Request (Key-based):**
+
+```json
+{
+  "processDefinitionId": null,
+  "processDefinitionKey": "2251799813685249",
+  "version": null,
+  "tenantId": null,
+  "variables": {
+    "order": {
+      "customerType": "REGULAR",
+      "total": 125.75,
+      "items": [
+        {
+          "category": "CLOTHING",
+          "quantity": 3
+        }
+      ]
+    }
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `processDefinitionId` | String | Either/Or | BPMN process ID to start by ID |
+| `processDefinitionKey` | String | Either/Or | Numeric process definition key to start by key |
+| `version` | Integer | Optional | Specific version when `processDefinitionId` is used |
+| `tenantId` | String | Optional | Tenant identifier for multi-tenant clusters |
+| `variables` | Object (`Map<String, Object>`) | Optional | Process variables sent to Camunda |
+| `variables.order.customerType` | String | Optional | Supported values for `OrderDTO` are `VIP` and `REGULAR` (case-insensitive) |
+| `variables.order.items[*].category` | String | Optional | Supported values are `ELECTRONICS`, `ALCOHOL`, `GROCERY`, `CLOTHING` (case-insensitive) |
+
+> **Note:** Either `processDefinitionId` or `processDefinitionKey` must be provided.
+
+**Error Responses:**
+- `400 Bad Request`: Missing both ID and key.
+- `500 Internal Server Error`: Error during process instance creation.
+
+**Success Response Example (200 OK):**
+
+```json
+{
+  "processDefinitionId": "my-process-model-1",
+  "processDefinitionVersion": 3,
+  "tenantId": "<default>",
+  "variables": {},
+  "processDefinitionKey": "2251799813686749",
+  "processInstanceKey": "2251799813690746",
+  "tags": [
+    "high-touch",
+    "remediation"
+  ]
+}
+```
+
+| Response Field | Type | Description |
+|---|---|---|
+| `processDefinitionId` | String | The process definition ID that was started |
+| `processDefinitionVersion` | Integer | The version of the process definition |
+| `tenantId` | String | The tenant context |
+| `variables` | Object | Process variables returned from Camunda |
+| `processDefinitionKey` | String | Numeric key of the process definition |
+| `processInstanceKey` | String | Unique key of the created process instance |
+| `tags` | Array | Tags associated with the process instance |
+
+---
+
 ## SOAP Endpoint
 
 SOAP is exposed under `/ws/*`.
@@ -535,6 +650,33 @@ Use a standard JSON object of key-value pairs (for example, `"key": "value"`).
 }
 ```
 
+### `OrderProcessDTO`
+
+Request model for `POST /api/camunda/process-instances/order-process`.
+
+```json
+{
+  "processDefinitionId": "string",
+  "processDefinitionKey": "string",
+  "version": 1,
+  "tenantId": "string",
+  "variables": {
+    "order": {
+      "customerType": "VIP",
+      "total": 250.50,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 2
+        }
+      ]
+    }
+  }
+}
+```
+
+`variables` is still a generic `Map<String, Object>` in Java. The documented `variables.order` structure above follows the API examples and is recommended for order-process payloads.
+
 ### SOAP Models
 
 `SoapVariableEntry` in Java uses `value: Object`, and the current SOAP XSD (`decision-evaluation.xsd`) defines `<value>` as `xsd:anyType` to allow typed SOAP values.
@@ -576,24 +718,27 @@ cd /path/to/your/project
 
 The current automated test suite is primarily unit-focused:
 
-- `DecisionDefinitionControllerTest` uses Mockito + MockMvc to exercise the REST controller mappings and response handling.
+- `DecisionControllerTest` uses Mockito + MockMvc to exercise `DecisionController` REST mappings and response handling.
+- `BusinessProcessControllerTest` uses Mockito + MockMvc to validate order process instance creation endpoint behavior.
 - `DecisionEvaluationSoapEndpointTest` verifies the SOAP endpoint's success and error payload behavior.
-- `OrchestrationClusterClientApplicationTests` is a lightweight smoke test class; it does **not** bootstrap the full Spring `ApplicationContext`.
+- `OrchestrationApiClientApplicationTests` is a lightweight smoke test class; it does **not** bootstrap the full Spring `ApplicationContext`.
 
 ### Test Coverage
 
 Tests include:
 - **REST endpoint tests** for topology, get by key, get XML, and search (`/api/camunda/...`)
 - **REST endpoint tests** for decision evaluation (`/api/camunda/decision-definitions/evaluation`)
+- **REST endpoint tests** for order process instance creation (`/api/camunda/process-instances/order-process`)
 - **Error handling tests** for missing identifiers and runtime exceptions
 - **SOAP endpoint tests** for success and error scenarios
 
 ### Running Specific Tests
 
 ```bash
-./mvnw test -Dtest=DecisionDefinitionControllerTest
+./mvnw test -Dtest=DecisionControllerTest
+./mvnw test -Dtest=BusinessProcessControllerTest
 ./mvnw test -Dtest=DecisionEvaluationSoapEndpointTest
-./mvnw test -Dtest=OrchestrationClusterClientApplicationTests
+./mvnw test -Dtest=OrchestrationApiClientApplicationTests
 ```
 
 ---

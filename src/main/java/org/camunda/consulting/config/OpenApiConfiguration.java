@@ -1,4 +1,4 @@
-package org.camunda.consulting;
+package org.camunda.consulting.config;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -16,7 +16,7 @@ import java.util.Arrays;
  * for REST API endpoints.
  */
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfiguration {
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -25,7 +25,8 @@ public class OpenApiConfig {
                         .title("Orchestration Cluster Java Client API")
                         .version("0.0.1-SNAPSHOT")
                         .description("REST and SOAP API client for interacting with Camunda 8 Orchestration Cluster. " +
-                                "This application provides endpoints to search and evaluate DMN decision definitions " +
+                                "This application provides endpoints to search and evaluate DMN decision definitions, " +
+                                "and create order process instances " +
                                 "using the official Camunda Java Client library.")
                         .license(new License()
                                 .name("Apache 2.0")

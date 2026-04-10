@@ -1,4 +1,4 @@
-package org.camunda.consulting;
+package org.camunda.consulting.config;
 
 import io.camunda.client.CamundaClient;
 import org.springframework.beans.factory.annotation.Value;
