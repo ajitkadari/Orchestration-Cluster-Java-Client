@@ -463,7 +463,6 @@ Creates an order process instance using either `processDefinitionId` or `process
 ```json
 {
   "processDefinitionId": "order-process",
-  "processDefinitionKey": null,
   "version": 1,
   "tenantId": "customer-service",
   "variables": {
@@ -489,7 +488,6 @@ Creates an order process instance using either `processDefinitionId` or `process
 
 ```json
 {
-  "processDefinitionId": null,
   "processDefinitionKey": "2251799813685249",
   "version": null,
   "tenantId": null,
@@ -656,10 +654,7 @@ Request model for `POST /api/camunda/process-instances/order-process`.
 
 ```json
 {
-  "processDefinitionId": "string",
-  "processDefinitionKey": "string",
-  "version": 1,
-  "tenantId": "string",
+  "processDefinitionId": "order-process",
   "variables": {
     "order": {
       "customerType": "VIP",
@@ -668,6 +663,28 @@ Request model for `POST /api/camunda/process-instances/order-process`.
         {
           "category": "ELECTRONICS",
           "quantity": 2
+        }
+      ]
+    }
+  }
+}
+```
+
+```json
+{
+  "processDefinitionKey": "2251799813686749",
+  "variables": {
+    "order": {
+      "customerType": "REGULAR",
+      "total": 150.78,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
+        },
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
         }
       ]
     }
