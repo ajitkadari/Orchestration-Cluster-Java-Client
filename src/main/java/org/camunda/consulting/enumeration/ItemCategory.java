@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
 
 public enum ItemCategory {
-    ELECTRONICS,
-    ALCOHOL,
-    GROCERY,
-    CLOTHING;
+    ELECTRONICS;
 
     @JsonCreator
     public static ItemCategory fromValue(String value) {

@@ -100,16 +100,16 @@ public class BusinessProcessController {
                                                       "tenantId": "customer-service",
                                                       "variables": {
                                                         "order": {
-                                                          "customerType": "premium",
+                                                          "customerType": "VIP",
                                                           "total": 250.50,
                                                           "items": [
                                                             {
                                                               "category": "ELECTRONICS",
-                                                              "quantity": 2
+                                                              "quantity": 1
                                                             },
                                                             {
-                                                              "category": "GROCERY",
-                                                              "quantity": 5
+                                                              "category": "ELECTRONICS",
+                                                              "quantity": 1
                                                             }
                                                           ]
                                                         }
@@ -127,11 +127,11 @@ public class BusinessProcessController {
                                                       "tenantId": null,
                                                       "variables": {
                                                         "order": {
-                                                          "customerType": "standard",
+                                                          "customerType": "REGULAR",
                                                           "total": 125.75,
                                                           "items": [
                                                             {
-                                                              "category": "CLOTHING",
+                                                              "category": "ELECTRONICS",
                                                               "quantity": 3
                                                             }
                                                           ]
