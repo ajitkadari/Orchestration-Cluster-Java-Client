@@ -463,8 +463,31 @@ Creates an order process instance using either `processDefinitionId` or `process
 ```json
 {
   "processDefinitionId": "order-process",
-  "version": 1,
-  "tenantId": "customer-service",
+  "variables": {
+    "order": {
+      "customerType": "VIP",
+      "total": 250.50,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
+        },
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
+        }
+      ]
+    }
+  }
+}
+```
+
+**Example Request (ID-based):**
+
+```json
+{
+  "processDefinitionId": "order-process",
+  "tenantId": "ecommerce-tenant",
   "variables": {
     "order": {
       "customerType": "VIP",
@@ -489,8 +512,27 @@ Creates an order process instance using either `processDefinitionId` or `process
 ```json
 {
   "processDefinitionKey": "2251799813685249",
-  "version": null,
-  "tenantId": null,
+  "variables": {
+    "order": {
+      "customerType": "REGULAR",
+      "total": 125.75,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 3
+        }
+      ]
+    }
+  }
+}
+```
+
+**Example Request (Key-based):**
+
+```json
+{
+  "processDefinitionKey": "2251799813685249",
+  "tenantId": "ecommerce-tenant",
   "variables": {
     "order": {
       "customerType": "REGULAR",
