@@ -1,6 +1,7 @@
 package org.camunda.consulting.service;
 
 import io.camunda.client.CamundaClient;
+import io.camunda.client.api.response.ProcessInstanceResult;
 import org.camunda.consulting.dto.OrderProcessDTO;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class BusinessProcessService {
         this.camundaClient = camundaClient;
     }
 
-    public Object createOrderProcessInstance(OrderProcessDTO requestBody) {
+    public ProcessInstanceResult createOrderProcessInstance(OrderProcessDTO requestBody) {
         if (requestBody == null) {
             throw new IllegalArgumentException("Request body must contain processDefinitionId or processDefinitionKey.");
         }
@@ -50,6 +51,6 @@ public class BusinessProcessService {
             commandStep3 = commandStep3.tenantId(requestBody.getTenantId());
         }
 
-        return commandStep3.send().join();
+        return commandStep3.withResult().send().join();
     }
 }

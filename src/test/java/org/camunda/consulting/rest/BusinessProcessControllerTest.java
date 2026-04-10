@@ -1,5 +1,6 @@
 package org.camunda.consulting.rest;
 
+import io.camunda.client.api.response.ProcessInstanceResult;
 import org.camunda.consulting.service.BusinessProcessService;
 import org.camunda.consulting.dto.OrderProcessDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -35,21 +40,9 @@ class BusinessProcessControllerTest {
 
     @Test
     void createOrderProcessInstanceReturnsOkWhenRequestIsValid() throws Exception {
+        ProcessInstanceResult result = sampleProcessInstanceResult();
         Mockito.when(businessProcessService.createOrderProcessInstance(Mockito.any(OrderProcessDTO.class)))
-                .thenReturn("""
-                        {
-                          "processDefinitionId": "my-process-model-1",
-                          "processDefinitionVersion": 3,
-                          "tenantId": "<default>",
-                          "variables": {},
-                          "processDefinitionKey": "2251799813686749",
-                          "processInstanceKey": "2251799813690746",
-                          "tags": [
-                            "high-touch",
-                            "remediation"
-                          ]
-                        }
-                        """);
+                .thenReturn(result);
 
         mockMvc.perform(post("/api/camunda/process-instances/order-process")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,6 +74,41 @@ class BusinessProcessControllerTest {
 
         Mockito.verify(businessProcessService, Mockito.times(1))
                 .createOrderProcessInstance(Mockito.any(OrderProcessDTO.class));
+    }
+
+    private ProcessInstanceResult sampleProcessInstanceResult() {
+        return new ProcessInstanceResult() {
+            @Override
+            public long getProcessDefinitionKey() { return 2251799813686749L; }
+
+            @Override
+            public String getBpmnProcessId() { return "order-process"; }
+
+            @Override
+            public int getVersion() { return 1; }
+
+            @Override
+            public long getProcessInstanceKey() { return 2251799813690746L; }
+
+            @Override
+            public String getVariables() { return "{}"; }
+
+            @Override
+            public Map<String, Object> getVariablesAsMap() { return Collections.emptyMap(); }
+
+            @Override
+            public <T> T getVariablesAsType(Class<T> ignored) { return null; }
+
+            @Override
+            public Object getVariable(String ignored) { return null; }
+
+            @Override
+            public String getTenantId() { return "<default>"; }
+
+            @Override
+            public Set<String> getTags() { return Collections.emptySet(); }
+
+        };
     }
 
     @Test

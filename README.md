@@ -419,8 +419,12 @@ Evaluates a DMN decision with the provided input variables.
 
 ```json
 {
-  "decisionDefinitionId": "1234-5678",
-  "variables": {}
+  "decisionDefinitionId": "nt-decision",
+  "variables": {
+    "team": "East Regional",
+    "state": "Alabama"
+   }
+  }
 }
 ```
 
@@ -428,8 +432,11 @@ Alternative request body:
 
 ```json
 {
-  "decisionDefinitionKey": "12345",
-  "variables": {}
+  "decisionDefinitionKey": "2251799813685249",
+  "variables": {
+    "team": "East Regional",
+    "state": "Alabama"
+  }
 }
 ```
 
@@ -568,16 +575,30 @@ Creates an order process instance using either `processDefinitionId` or `process
 
 ```json
 {
-  "processDefinitionId": "my-process-model-1",
-  "processDefinitionVersion": 3,
+  "bpmnProcessId": "order-process",
+  "processDefinitionKey": 2251799816070543,
+  "processInstanceKey": 2251799816070760,
+  "tags": [],
   "tenantId": "<default>",
-  "variables": {},
-  "processDefinitionKey": "2251799813686749",
-  "processInstanceKey": "2251799813690746",
-  "tags": [
-    "high-touch",
-    "remediation"
-  ]
+  "variables": "{\"discount\":0.15,\"order\":{\"customerType\":\"VIP\",\"total\":1000,\"items\":[{\"category\":\"ELECTRONICS\",\"quantity\":1},{\"category\":\"ELECTRONICS\",\"quantity\":1}]}}",
+  "variablesAsMap": {
+    "discount": 0.15,
+    "order": {
+      "customerType": "VIP",
+      "total": 1000,
+      "items": [
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
+        },
+        {
+          "category": "ELECTRONICS",
+          "quantity": 1
+        }
+      ]
+    }
+  },
+  "version": 8
 }
 ```
 
