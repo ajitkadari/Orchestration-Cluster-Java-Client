@@ -473,11 +473,11 @@ Creates an order process instance using either `processDefinitionId` or `process
       "items": [
         {
           "category": "ELECTRONICS",
-          "quantity": 2
+          "quantity": 1
         },
         {
-          "category": "GROCERY",
-          "quantity": 5
+          "category": "ELECTRONICS",
+          "quantity": 1
         }
       ]
     }
@@ -499,7 +499,7 @@ Creates an order process instance using either `processDefinitionId` or `process
       "total": 125.75,
       "items": [
         {
-          "category": "CLOTHING",
+          "category": "ELECTRONICS",
           "quantity": 3
         }
       ]
