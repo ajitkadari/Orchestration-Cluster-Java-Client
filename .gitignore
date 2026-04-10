@@ -32,6 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
-### direnv ***
+### direnv ###
 .direnv/
 .envrc
+
+### jEnv ###
+/.java-version
