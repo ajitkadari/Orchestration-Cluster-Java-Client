@@ -155,8 +155,11 @@ public class DecisionController {
                                             name = "Evaluate using decisionDefinitionId",
                                             value = """
                                                     {
-                                                      "decisionDefinitionId": "1234-5678",
-                                                      "variables": {}
+                                                      "decisionDefinitionId": "nt-decision",
+                                                      "variables": {
+                                                        "team": "East Regional",
+                                                        "state": "Alabama"
+                                                      }
                                                     }
                                                     """
                                     ),
@@ -164,8 +167,11 @@ public class DecisionController {
                                             name = "Evaluate using decisionDefinitionKey",
                                             value = """
                                                     {
-                                                      "decisionDefinitionKey": "12345",
-                                                      "variables": {}
+                                                      "decisionDefinitionKey": "2251799813685249",
+                                                      "variables": {
+                                                        "team": "East Regional",
+                                                        "state": "Alabama"
+                                                      }
                                                     }
                                                     """
                                     )

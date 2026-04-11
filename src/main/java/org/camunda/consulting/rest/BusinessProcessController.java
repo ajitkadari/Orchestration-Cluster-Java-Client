@@ -158,10 +158,10 @@ public class BusinessProcessController {
                                     )
                             }
                     ))
-            @org.springframework.web.bind.annotation.RequestBody OrderProcessDTO request) {
+            @org.springframework.web.bind.annotation.RequestBody OrderProcessDTO orderProcessDTO) {
         try {
-            LOGGER.info("Received process instance request for id='{}' key='{}'", request.getProcessDefinitionId(), request.getProcessDefinitionKey());
-            return ResponseEntity.ok(businessProcessService.createOrderProcessInstance(request));
+            LOGGER.info("Received process instance request for id='{}' key='{}'", orderProcessDTO.getProcessDefinitionId(), orderProcessDTO.getProcessDefinitionKey());
+            return ResponseEntity.ok(businessProcessService.createOrderProcessInstance(orderProcessDTO));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

@@ -16,25 +16,25 @@ public class DecisionService {
         this.camundaClient = camundaClient;
     }
 
-    public Object evaluate(DecisionDTO request) {
-        String decisionId = request.getDecisionDefinitionId();
-        String decisionKey = request.getDecisionDefinitionKey();
+    public Object evaluate(DecisionDTO decisionDTO) {
+        String decisionDefinitionId = decisionDTO.getDecisionDefinitionId();
+        String decisionDefinitionKey = decisionDTO.getDecisionDefinitionKey();
 
-        if ((decisionId == null || decisionId.isBlank()) && (decisionKey == null || decisionKey.isBlank())) {
+        if ((decisionDefinitionId == null || decisionDefinitionId.isBlank()) && (decisionDefinitionKey == null || decisionDefinitionKey.isBlank())) {
             throw new IllegalArgumentException("Either decisionDefinitionId or decisionDefinitionKey must be provided.");
         }
 
         Map<String, Object> variables = new HashMap<>();
-        if (request.getVariables() != null) {
-            variables.putAll(request.getVariables());
+        if (decisionDTO.getVariables() != null) {
+            variables.putAll(decisionDTO.getVariables());
         }
 
         var command = camundaClient.newEvaluateDecisionCommand();
-        var commandStep2 = (decisionId != null && !decisionId.isBlank())
-                ? command.decisionId(decisionId)
-                : decisionKey.chars().allMatch(Character::isDigit)
-                ? command.decisionKey(Long.parseLong(decisionKey))
-                : command.decisionId(decisionKey);
+        var commandStep2 = (decisionDefinitionId != null && !decisionDefinitionId.isBlank())
+                ? command.decisionId(decisionDefinitionId)
+                : decisionDefinitionKey.chars().allMatch(Character::isDigit)
+                ? command.decisionKey(Long.parseLong(decisionDefinitionKey))
+                : command.decisionId(decisionDefinitionKey);
 
         return commandStep2
                 .variables(variables)

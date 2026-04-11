@@ -17,13 +17,13 @@ public class BusinessProcessService {
         this.camundaClient = camundaClient;
     }
 
-    public ProcessInstanceResult createOrderProcessInstance(OrderProcessDTO requestBody) {
-        if (requestBody == null) {
+    public ProcessInstanceResult createOrderProcessInstance(OrderProcessDTO orderProcessDTO) {
+        if (orderProcessDTO == null) {
             throw new IllegalArgumentException("Request body must contain processDefinitionId or processDefinitionKey.");
         }
 
-        String processDefinitionId = requestBody.getProcessDefinitionId();
-        String processDefinitionKey = requestBody.getProcessDefinitionKey();
+        String processDefinitionId = orderProcessDTO.getProcessDefinitionId();
+        String processDefinitionKey = orderProcessDTO.getProcessDefinitionKey();
 
         if ((processDefinitionId == null || processDefinitionId.isBlank())
                 && (processDefinitionKey == null || processDefinitionKey.isBlank())) {
@@ -31,24 +31,24 @@ public class BusinessProcessService {
         }
 
         Map<String, Object> variables = new HashMap<>();
-        if (requestBody.getVariables() != null) {
-            requestBody.getVariables().forEach((k, v) -> variables.put(String.valueOf(k), v));
+        if (orderProcessDTO.getVariables() != null) {
+            orderProcessDTO.getVariables().forEach((k, v) -> variables.put(String.valueOf(k), v));
         }
 
         var command = camundaClient.newCreateInstanceCommand();
 
         var commandStep3 = (processDefinitionKey != null && !processDefinitionKey.isBlank())
                 ? command.processDefinitionKey(Long.parseLong(processDefinitionKey))
-                : (requestBody.getVersion() != null
-                        ? command.bpmnProcessId(processDefinitionId).version(requestBody.getVersion())
+                : (orderProcessDTO.getVersion() != null
+                        ? command.bpmnProcessId(processDefinitionId).version(orderProcessDTO.getVersion())
                         : command.bpmnProcessId(processDefinitionId).latestVersion());
 
         if (!variables.isEmpty()) {
             commandStep3 = commandStep3.variables(variables);
         }
 
-        if (requestBody.getTenantId() != null && !requestBody.getTenantId().isBlank()) {
-            commandStep3 = commandStep3.tenantId(requestBody.getTenantId());
+        if (orderProcessDTO.getTenantId() != null && !orderProcessDTO.getTenantId().isBlank()) {
+            commandStep3 = commandStep3.tenantId(orderProcessDTO.getTenantId());
         }
 
         return commandStep3.withResult().send().join();

@@ -65,7 +65,7 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
 | Camunda Java Client | 8.8.21 |
-| Jackson (application code) | 3.x (`tools.jackson`, via `spring-boot-starter-web`) |
+| Jackson (application code) | 3.x (`tools.jackson` for `ObjectMapper`; enums use `com.fasterxml.jackson.annotation.JsonCreator`) |
 | Jackson (springdoc transitive) | 2.21.x (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
 | Testing | `spring-boot-starter-test` (versions managed transitively by Spring Boot) |
@@ -74,7 +74,7 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 
 > Note: `hibernate-validator` is not directly version-pinned in `pom.xml`; it is brought in transitively by `spring-boot-starter-validation` and version-managed by `spring-boot-starter-parent`.
 >
-> Note: This project intentionally has both Jackson namespaces on the classpath: application SOAP code imports `tools.jackson` (3.x), while springdoc 3.0.2 still uses `com.fasterxml.jackson` (2.x) transitively.
+> Note: This project intentionally has both Jackson namespaces on the classpath. SOAP serialization uses `tools.jackson` (3.x) `ObjectMapper`, and enum deserialization uses `com.fasterxml.jackson.annotation.JsonCreator`. In addition, springdoc 3.0.2 brings `com.fasterxml.jackson` (2.x) transitively for its own integration stack.
 
 ---
 
@@ -95,7 +95,7 @@ src/
 │   │   │   └── ItemDTO.java                               # Item payload DTO used in OrderDTO.items
 │   │   ├── enumeration/
 │   │   │   ├── CustomerType.java                          # VIP/REGULAR (case-insensitive)
-│   │   │   └── ItemCategory.java                          # ELECTRONICS/ALCOHOL/GROCERY/CLOTHING (case-insensitive)
+│   │   │   └── ItemCategory.java                          # ELECTRONICS (case-insensitive)
 │   │   ├── service/
 │   │   │   ├── DecisionService.java                       # Decision/topology/search/evaluation business logic
 │   │   │   └── BusinessProcessService.java                # Order process instance creation business logic
@@ -423,7 +423,6 @@ Evaluates a DMN decision with the provided input variables.
   "variables": {
     "team": "East Regional",
     "state": "Alabama"
-   }
   }
 }
 ```
@@ -489,7 +488,7 @@ Creates an order process instance using either `processDefinitionId` or `process
 }
 ```
 
-**Example Request (ID-based):**
+**Example Request (ID-based with tenantId):**
 
 ```json
 {
@@ -534,7 +533,7 @@ Creates an order process instance using either `processDefinitionId` or `process
 }
 ```
 
-**Example Request (Key-based):**
+**Example Request (Key-based with tenantId):**
 
 ```json
 {
@@ -563,7 +562,7 @@ Creates an order process instance using either `processDefinitionId` or `process
 | `tenantId` | String | Optional | Tenant identifier for multi-tenant clusters |
 | `variables` | Object (`Map<String, Object>`) | Optional | Process variables sent to Camunda |
 | `variables.order.customerType` | String | Optional | Supported values for `OrderDTO` are `VIP` and `REGULAR` (case-insensitive) |
-| `variables.order.items[*].category` | String | Optional | Supported values are `ELECTRONICS`, `ALCOHOL`, `GROCERY`, `CLOTHING` (case-insensitive) |
+| `variables.order.items[*].category` | String | Optional | Supported value is `ELECTRONICS` (case-insensitive) |
 
 > **Note:** Either `processDefinitionId` or `processDefinitionKey` must be provided.
 
@@ -608,9 +607,12 @@ Creates an order process instance using either `processDefinitionId` or `process
 | `processDefinitionVersion` | Integer | The version of the process definition |
 | `tenantId` | String | The tenant context |
 | `variables` | Object | Process variables returned from Camunda |
-| `processDefinitionKey` | String | Numeric key of the process definition |
-| `processInstanceKey` | String | Unique key of the created process instance |
+| `bpmnProcessId` | String | BPMN process ID for the created instance |
+| `processDefinitionKey` | Number (`long`) | Numeric key of the process definition |
+| `processInstanceKey` | Number (`long`) | Unique key of the created process instance |
 | `tags` | Array | Tags associated with the process instance |
+| `version` | Number (`int`) | Version of the deployed process definition |
+| `variablesAsMap` | Object | Parsed variables object returned by Camunda |
 
 ---
 
