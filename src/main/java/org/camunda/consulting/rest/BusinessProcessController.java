@@ -47,16 +47,30 @@ public class BusinessProcessController {
                                     name = "ProcessInstanceCreated",
                                     value = """
                                             {
-                                              "processDefinitionId": "my-process-model-1",
-                                              "processDefinitionVersion": 3,
+                                              "bpmnProcessId": "order-process",
+                                              "processDefinitionKey": 2251799816087191,
+                                              "processInstanceKey": 2251799816115600,
+                                              "tags": [],
                                               "tenantId": "<default>",
-                                              "variables": {},
-                                              "processDefinitionKey": "2251799813686749",
-                                              "processInstanceKey": "2251799813690746",
-                                              "tags": [
-                                                "high-touch",
-                                                "remediation"
-                                              ]
+                                              "variables": "{\\"discount\\":0.15,\\"order\\":{\\"customerType\\":\\"VIP\\",\\"total\\":1000,\\"items\\":[{\\"category\\":\\"ELECTRONICS\\",\\"quantity\\":1},{\\"category\\":\\"ELECTRONICS\\",\\"quantity\\":1}]}}",
+                                              "variablesAsMap": {
+                                                "discount": 0.15,
+                                                "order": {
+                                                  "customerType": "VIP",
+                                                  "total": 1000,
+                                                  "items": [
+                                                    {
+                                                      "category": "ELECTRONICS",
+                                                      "quantity": 1
+                                                    },
+                                                    {
+                                                      "category": "ELECTRONICS",
+                                                      "quantity": 1
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "version": 9
                                             }
                                             """
                             )
@@ -126,7 +140,15 @@ public class BusinessProcessController {
                                                           "items": [
                                                             {
                                                               "category": "ELECTRONICS",
-                                                              "quantity": 3
+                                                              "quantity": 1
+                                                            },
+                                                            {
+                                                              "category": "ELECTRONICS",
+                                                              "quantity": 1
+                                                            },
+                                                            {                                                            {
+                                                              "category": "ELECTRONICS",
+                                                              "quantity": 1
                                                             }
                                                           ]
                                                         }
