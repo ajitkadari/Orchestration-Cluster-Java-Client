@@ -1,6 +1,8 @@
 package org.camunda.consulting.rest;
 
+import io.camunda.client.api.response.ProcessInstanceResult;
 import io.swagger.v3.oas.annotations.Operation;
+import tools.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.camunda.consulting.service.BusinessProcessService;
+import org.camunda.consulting.dto.OrderDTO;
+import java.util.Map;
 import org.camunda.consulting.dto.OrderProcessDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +31,11 @@ public class BusinessProcessController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BusinessProcessController.class);
 
     private final BusinessProcessService businessProcessService;
+    private final ObjectMapper objectMapper;
 
-    public BusinessProcessController(BusinessProcessService businessProcessService) {
+    public BusinessProcessController(BusinessProcessService businessProcessService, ObjectMapper objectMapper) {
         this.businessProcessService = businessProcessService;
+        this.objectMapper = objectMapper;
     }
 
     @Operation(
@@ -161,7 +167,12 @@ public class BusinessProcessController {
             @org.springframework.web.bind.annotation.RequestBody OrderProcessDTO orderProcessDTO) {
         try {
             LOGGER.info("Received process instance request for id='{}' key='{}'", orderProcessDTO.getProcessDefinitionId(), orderProcessDTO.getProcessDefinitionKey());
-            return ResponseEntity.ok(businessProcessService.createOrderProcessInstance(orderProcessDTO));
+            ProcessInstanceResult instanceResult = businessProcessService.createOrderProcessInstance(orderProcessDTO);
+            Map<String, Object> variablesAsMap = instanceResult.getVariablesAsMap();
+            OrderDTO resultDTO = objectMapper.convertValue(variablesAsMap.get("order"), OrderDTO.class);
+            resultDTO.setDiscount((Double) variablesAsMap.get("discount"));
+            resultDTO.setCouponCode((String) variablesAsMap.get("couponCode"));
+            return ResponseEntity.ok(resultDTO);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

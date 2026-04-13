@@ -1,8 +1,12 @@
 package org.camunda.consulting.rest;
 
 import io.camunda.client.api.response.ProcessInstanceResult;
-import org.camunda.consulting.service.BusinessProcessService;
+import org.camunda.consulting.dto.ItemDTO;
+import org.camunda.consulting.dto.OrderDTO;
 import org.camunda.consulting.dto.OrderProcessDTO;
+import org.camunda.consulting.enumeration.CustomerType;
+import org.camunda.consulting.enumeration.ItemCategory;
+import org.camunda.consulting.service.BusinessProcessService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -33,6 +38,9 @@ class BusinessProcessControllerTest {
     @Mock
     private BusinessProcessService businessProcessService;
 
+    @Mock
+    private ObjectMapper objectMapper;
+
     @InjectMocks
     private BusinessProcessController controller;
 
@@ -44,8 +52,11 @@ class BusinessProcessControllerTest {
     @Test
     void createOrderProcessInstanceReturnsOkWhenRequestIsValid() throws Exception {
         ProcessInstanceResult result = sampleProcessInstanceResult();
+        OrderDTO mappedDTO = sampleOrderDTO();
+
         Mockito.when(businessProcessService.createOrderProcessInstance(Mockito.any(OrderProcessDTO.class)))
                 .thenReturn(result);
+        Mockito.doReturn(mappedDTO).when(objectMapper).convertValue(Mockito.any(), Mockito.eq(OrderDTO.class));
 
         mockMvc.perform(post("/api/camunda/process-instances/order-process")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -71,23 +82,19 @@ class BusinessProcessControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bpmnProcessId").value("order-process"))
-                .andExpect(jsonPath("$.processDefinitionKey").isNumber())
-                .andExpect(jsonPath("$.processInstanceKey").isNumber())
-                .andExpect(jsonPath("$.tenantId").isString())
-                .andExpect(jsonPath("$.version").isNumber())
-                .andExpect(jsonPath("$.tags").isArray())
-                .andExpect(jsonPath("$.variables").value("{\"discount\":0.15,\"order\":{\"customerType\":\"VIP\",\"total\":1000.0,\"items\":[{\"category\":\"ELECTRONICS\",\"quantity\":1},{\"category\":\"ELECTRONICS\",\"quantity\":1}]}}"))
-                .andExpect(jsonPath("$.variablesAsMap.discount").value(0.15))
-                .andExpect(jsonPath("$.variablesAsMap.order.customerType").value("VIP"))
-                .andExpect(jsonPath("$.variablesAsMap.order.total").value(1000))
-                .andExpect(jsonPath("$.variablesAsMap.order.items[0].category").value("ELECTRONICS"))
-                .andExpect(jsonPath("$.variablesAsMap.order.items[0].quantity").value(1))
-                .andExpect(jsonPath("$.variablesAsMap.order.items[1].category").value("ELECTRONICS"))
-                .andExpect(jsonPath("$.variablesAsMap.order.items[1].quantity").value(1));
+                .andExpect(jsonPath("$.customerType").value("VIP"))
+                .andExpect(jsonPath("$.total").value(1000.0))
+                .andExpect(jsonPath("$.discount").value(0.15))
+                .andExpect(jsonPath("$.couponCode").value("SUMMER10"))
+                .andExpect(jsonPath("$.items[0].category").value("ELECTRONICS"))
+                .andExpect(jsonPath("$.items[0].quantity").value(1))
+                .andExpect(jsonPath("$.items[1].category").value("ELECTRONICS"))
+                .andExpect(jsonPath("$.items[1].quantity").value(1));
 
         Mockito.verify(businessProcessService, Mockito.times(1))
                 .createOrderProcessInstance(Mockito.any(OrderProcessDTO.class));
+        Mockito.verify(objectMapper, Mockito.times(1))
+                .convertValue(Mockito.any(), Mockito.eq(OrderDTO.class));
     }
 
     private ProcessInstanceResult sampleProcessInstanceResult() {
@@ -106,6 +113,7 @@ class BusinessProcessControllerTest {
 
         Map<String, Object> variablesAsMap = new LinkedHashMap<>();
         variablesAsMap.put("discount", 0.15);
+        variablesAsMap.put("couponCode", "SUMMER10");
         variablesAsMap.put("order", order);
 
         return new ProcessInstanceResult() {
@@ -142,6 +150,14 @@ class BusinessProcessControllerTest {
             public Set<String> getTags() { return Collections.emptySet(); }
 
         };
+    }
+
+    private OrderDTO sampleOrderDTO() {
+        List<ItemDTO> items = List.of(
+                new ItemDTO(ItemCategory.ELECTRONICS, 1),
+                new ItemDTO(ItemCategory.ELECTRONICS, 1)
+        );
+        return new OrderDTO(CustomerType.VIP, 1000.0, items, 0.15, "SUMMER10");
     }
 
     @Test

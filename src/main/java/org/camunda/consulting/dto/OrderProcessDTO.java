@@ -1,17 +1,41 @@
 package org.camunda.consulting.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
 public class OrderProcessDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("processDefinitionId")
     private String processDefinitionId;
+
+    @JsonProperty("processDefinitionKey")
     private String processDefinitionKey;
+
+    @JsonProperty("version")
     private Integer version;
+
+    @JsonProperty("tenantId")
     private String tenantId;
+
+    @JsonProperty("variables")
     private Map<String, Object> variables;
+
+    public OrderProcessDTO() {
+    }
+
+    public OrderProcessDTO(String processDefinitionId, String processDefinitionKey, Integer version, String tenantId, Map<String, Object> variables) {
+        this.processDefinitionId = processDefinitionId;
+        this.processDefinitionKey = processDefinitionKey;
+        this.version = version;
+        this.tenantId = tenantId;
+        this.variables = variables;
+    }
 
     public String getProcessDefinitionId() {
         return processDefinitionId;

@@ -1,5 +1,7 @@
 package org.camunda.consulting.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
@@ -9,8 +11,13 @@ public class DecisionDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("decisionDefinitionId")
     private String decisionDefinitionId;
+
+    @JsonProperty("decisionDefinitionKey")
     private String decisionDefinitionKey;
+
+    @JsonProperty("variables")
     private Map<String, Object> variables;
 
     public DecisionDTO() {
