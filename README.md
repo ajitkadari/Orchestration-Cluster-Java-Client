@@ -641,6 +641,7 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 
 ### SOAP Request Example
 
+**Simple scalar variables:**
 ```xml
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                   xmlns:dec="http://camunda.org/consulting/decision-evaluation">
@@ -662,6 +663,38 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
   </soapenv:Body>
 </soapenv:Envelope>
 ```
+
+**Complex nested object:**
+```xml
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:dec="http://camunda.org/consulting/decision-evaluation">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <dec:evaluateDecisionRequest>
+      <dec:decisionDefinitionId>discount-decision</dec:decisionDefinitionId>
+      <dec:variables>
+        <dec:entry>
+          <dec:key>order</dec:key>
+          <dec:value>
+            <dec:customerType>VIP</dec:customerType>
+            <dec:total>1000</dec:total>
+            <dec:items>
+              <dec:category>ELECTRONICS</dec:category>
+              <dec:quantity>1</dec:quantity>
+            </dec:items>
+            <dec:items>
+              <dec:category>ELECTRONICS</dec:category>
+              <dec:quantity>1</dec:quantity>
+            </dec:items>
+          </dec:value>
+        </dec:entry>
+      </dec:variables>
+    </dec:evaluateDecisionRequest>
+  </soapenv:Body>
+</soapenv:Envelope>
+```
+
+**Important:** All variables must be wrapped in `<dec:entry>` elements with `<dec:key>` and `<dec:value>`. The `<dec:value>` can contain simple text or complex nested XML structures.
 
 ---
 

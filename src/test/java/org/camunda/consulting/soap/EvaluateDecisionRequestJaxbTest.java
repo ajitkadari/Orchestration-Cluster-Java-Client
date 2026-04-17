@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EvaluateDecisionRequestJaxbTest {
 
@@ -50,6 +51,86 @@ class EvaluateDecisionRequestJaxbTest {
         assertEquals("nt-decision", dto.getDecisionDefinitionId());
         assertEquals("East Regional", dto.getVariables().get("team"));
         assertEquals("Alabama", dto.getVariables().get("state"));
+    }
+
+    @Test
+    void endpointPreservesComplexNestedObjectStructure() throws Exception {
+        String xml = """
+                <dec:evaluateDecisionRequest xmlns:dec="http://camunda.org/consulting/decision-evaluation">
+                  <dec:decisionDefinitionId>discount-decision</dec:decisionDefinitionId>
+                  <dec:variables>
+                    <dec:entry>
+                      <dec:key>order</dec:key>
+                      <dec:value>
+                        <dec:customerType>VIP</dec:customerType>
+                        <dec:total>1000</dec:total>
+                        <dec:items>
+                          <dec:category>ELECTRONICS</dec:category>
+                          <dec:quantity>1</dec:quantity>
+                        </dec:items>
+                        <dec:items>
+                          <dec:category>ELECTRONICS</dec:category>
+                          <dec:quantity>1</dec:quantity>
+                        </dec:items>
+                      </dec:value>
+                    </dec:entry>
+                  </dec:variables>
+                </dec:evaluateDecisionRequest>
+                """;
+
+        JAXBContext context = JAXBContext.newInstance(EvaluateDecisionRequest.class);
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        var document = documentBuilderFactory.newDocumentBuilder()
+                .parse(new InputSource(new StringReader(xml)));
+
+        EvaluateDecisionRequest request = unmarshaller
+                .unmarshal(document.getDocumentElement(), EvaluateDecisionRequest.class)
+                .getValue();
+
+        DecisionService decisionService = Mockito.mock(DecisionService.class);
+        Mockito.when(decisionService.evaluate(Mockito.any())).thenReturn(Map.of("discount", 0.15));
+
+        DecisionEvaluationSoapEndpoint endpoint = new DecisionEvaluationSoapEndpoint(decisionService, new ObjectMapper());
+        endpoint.evaluateDecision(request);
+
+        ArgumentCaptor<DecisionDTO> captor = ArgumentCaptor.forClass(DecisionDTO.class);
+        Mockito.verify(decisionService).evaluate(captor.capture());
+
+        DecisionDTO dto = captor.getValue();
+        assertEquals("discount-decision", dto.getDecisionDefinitionId());
+
+        // Verify nested structure is preserved
+        @SuppressWarnings("unchecked")
+        Map<String, Object> orderMap = (Map<String, Object>) dto.getVariables().get("order");
+        assertNotNull(orderMap);
+        assertEquals("VIP", orderMap.get("customerType"));
+
+        // Verify numeric type conversion for total
+        Object totalObj = orderMap.get("total");
+        assertNotNull(totalObj);
+        assertTrue(totalObj instanceof Number, "total should be a Number, but got: " + totalObj.getClass().getSimpleName());
+        assertEquals(1000.0, ((Number) totalObj).doubleValue());
+
+        // Verify items array
+        Object itemsObj = orderMap.get("items");
+        assertNotNull(itemsObj);
+        assertTrue(itemsObj instanceof java.util.List);
+        @SuppressWarnings("unchecked")
+        java.util.List<Object> items = (java.util.List<Object>) itemsObj;
+        assertEquals(2, items.size());
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> firstItem = (Map<String, Object>) items.getFirst();
+        assertEquals("ELECTRONICS", firstItem.get("category"));
+
+        // Verify numeric type conversion for quantity
+        Object quantityObj = firstItem.get("quantity");
+        assertNotNull(quantityObj);
+        assertTrue(quantityObj instanceof Number, "quantity should be a Number, but got: " + quantityObj.getClass().getSimpleName());
+        assertEquals(1L, ((Number) quantityObj).longValue());
     }
 
     private EvaluateDecisionRequest unmarshallRequest() throws Exception {
