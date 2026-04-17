@@ -50,7 +50,7 @@ public class DecisionEvaluationSoapEndpoint {
         }
 
         try {
-            Object result = decisionEvaluationService.evaluate(dto);
+            io.camunda.client.api.response.EvaluateDecisionResponse result = decisionEvaluationService.evaluate(dto);
             response.setSuccess(true);
             response.setResult(SoapUtils.toSoapResult(objectMapper, result));
             if (LOGGER.isDebugEnabled()) {

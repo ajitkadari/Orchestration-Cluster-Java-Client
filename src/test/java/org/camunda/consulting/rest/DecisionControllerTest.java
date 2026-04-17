@@ -1,5 +1,7 @@
 package org.camunda.consulting.rest;
 
+import io.camunda.client.api.response.EvaluateDecisionResponse;
+import io.camunda.client.api.response.EvaluatedDecision;
 import org.camunda.consulting.service.DecisionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -109,7 +113,7 @@ class DecisionControllerTest {
     @Test
     void evaluateDecisionReturnsOkWhenRequestIsValid() throws Exception {
         Mockito.when(decisionEvaluationService.evaluate(Mockito.any()))
-                .thenReturn("{\"result\": \"approved\"}");
+                .thenReturn(minimalDecisionResponse());
 
         mockMvc.perform(post("/api/camunda/decision-definitions/evaluation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -127,5 +131,23 @@ class DecisionControllerTest {
                         .content("{\"decisionDefinitionId\": \"decision-123\"}"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("Evaluation failed")));
+    }
+
+    private static EvaluateDecisionResponse minimalDecisionResponse() {
+        return new EvaluateDecisionResponse() {
+            @Override public String getDecisionId()             { return "test-decision"; }
+            @Override public String getDecisionOutput()         { return "approved"; }
+            @Override public String getDecisionName()           { return null; }
+            @Override public String getDecisionRequirementsId() { return null; }
+            @Override public String getFailedDecisionId()       { return ""; }
+            @Override public String getFailureMessage()         { return ""; }
+            @Override public String getTenantId()               { return "<default>"; }
+            @Override public int    getDecisionVersion()        { return 0; }
+            @Override public long   getDecisionKey()            { return 0; }
+            @Override public long   getDecisionRequirementsKey(){ return 0; }
+            @Override public long   getDecisionInstanceKey()    { return 0; }
+            @Override public long   getDecisionEvaluationKey()  { return 0; }
+            @Override public List<EvaluatedDecision> getEvaluatedDecisions() { return List.of(); }
+        };
     }
 }

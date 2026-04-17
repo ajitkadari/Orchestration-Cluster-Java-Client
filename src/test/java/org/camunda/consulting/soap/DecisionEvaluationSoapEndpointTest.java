@@ -1,5 +1,7 @@
 package org.camunda.consulting.soap;
 
+import io.camunda.client.api.response.EvaluateDecisionResponse;
+import io.camunda.client.api.response.EvaluatedDecision;
 import tools.jackson.databind.ObjectMapper;
 import org.camunda.consulting.service.DecisionService;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DecisionEvaluationSoapEndpointTest {
@@ -20,7 +23,7 @@ class DecisionEvaluationSoapEndpointTest {
     @Test
     void evaluateDecisionReturnsSuccessPayloadWhenServiceSucceeds() {
         DecisionService service = Mockito.mock(DecisionService.class);
-        Mockito.when(service.evaluate(Mockito.any())).thenReturn(Map.of("decision", "approved"));
+        Mockito.when(service.evaluate(Mockito.any())).thenReturn(minimalDecisionResponse("discount-decision", "0.15"));
 
         DecisionEvaluationSoapEndpoint endpoint = new DecisionEvaluationSoapEndpoint(service, new ObjectMapper());
 
@@ -36,9 +39,36 @@ class DecisionEvaluationSoapEndpointTest {
         var response = endpoint.evaluateDecision(request);
 
         assertTrue(response.isSuccess());
-        assertEquals(1, response.getResult().getAny().size());
-        assertEquals("decision", response.getResult().getAny().getFirst().getTagName());
-        assertEquals("approved", response.getResult().getAny().getFirst().getTextContent());
+        assertNotNull(response.getResult());
+        assertFalse(response.getResult().getAny().isEmpty());
+        assertTrue(response.getResult().getAny().stream()
+                .anyMatch(el -> "decisionId".equals(el.getTagName()) && "discount-decision".equals(el.getTextContent())),
+                "Expected <decisionId>discount-decision</decisionId> element in SOAP result");
+        assertTrue(response.getResult().getAny().stream()
+                .anyMatch(el -> "decisionOutput".equals(el.getTagName()) && "0.15".equals(el.getTextContent())),
+                "Expected <decisionOutput>0.15</decisionOutput> element in SOAP result");
+    }
+
+    // -----------------------------------------------------------------------
+    // Test helper
+    // -----------------------------------------------------------------------
+
+    private static EvaluateDecisionResponse minimalDecisionResponse(String decisionId, String decisionOutput) {
+        return new EvaluateDecisionResponse() {
+            @Override public String getDecisionId()             { return decisionId; }
+            @Override public String getDecisionOutput()         { return decisionOutput; }
+            @Override public String getDecisionName()           { return null; }
+            @Override public String getDecisionRequirementsId() { return null; }
+            @Override public String getFailedDecisionId()       { return ""; }
+            @Override public String getFailureMessage()         { return ""; }
+            @Override public String getTenantId()               { return "<default>"; }
+            @Override public int    getDecisionVersion()        { return 0; }
+            @Override public long   getDecisionKey()            { return 0; }
+            @Override public long   getDecisionRequirementsKey(){ return 0; }
+            @Override public long   getDecisionInstanceKey()    { return 0; }
+            @Override public long   getDecisionEvaluationKey()  { return 0; }
+            @Override public List<EvaluatedDecision> getEvaluatedDecisions() { return List.of(); }
+        };
     }
 
     @Test

@@ -1,5 +1,6 @@
 package org.camunda.consulting.rest;
 
+import io.camunda.client.api.response.EvaluateDecisionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -32,9 +34,11 @@ public class DecisionController {
     private static final Logger LOGGER = LoggerFactory.getLogger(DecisionController.class);
 
     private final DecisionService decisionService;
+    private final ObjectMapper objectMapper;
 
-    public DecisionController(DecisionService decisionEvaluationService) {
+    public DecisionController(DecisionService decisionEvaluationService, ObjectMapper objectMapper) {
         this.decisionService = decisionEvaluationService;
+        this.objectMapper = objectMapper;
     }
 
     @Operation(summary = "Get Camunda Cluster topology", description = "Returns Camunda Cluster topology payload from the configured Camunda base URL")
@@ -180,7 +184,13 @@ public class DecisionController {
             @RequestBody DecisionDTO request) {
         try {
             LOGGER.info("Received decision evaluation request for id='{}' key='{}'", request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
-            return ResponseEntity.ok(decisionService.evaluate(request));
+            EvaluateDecisionResponse response = decisionService.evaluate(request);
+            /*
+            In here you use the ObjectMapper to read from response and populate a DTO of your choice to return to the client.
+            For simplicity, we are returning the raw response from Camunda,
+            but you can easily transform it into a more client-friendly format if needed.
+             */
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {

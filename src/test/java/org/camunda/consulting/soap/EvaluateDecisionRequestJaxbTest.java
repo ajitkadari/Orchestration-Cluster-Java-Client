@@ -1,5 +1,7 @@
 package org.camunda.consulting.soap;
 
+import io.camunda.client.api.response.EvaluateDecisionResponse;
+import io.camunda.client.api.response.EvaluatedDecision;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import org.camunda.consulting.dto.DecisionDTO;
@@ -14,6 +16,7 @@ import org.xml.sax.InputSource;
 import tools.jackson.databind.ObjectMapper;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +41,7 @@ class EvaluateDecisionRequestJaxbTest {
     @Test
     void endpointNormalizesJaxbAnyTypeValuesBeforeCallingDecisionService() throws Exception {
         DecisionService decisionService = Mockito.mock(DecisionService.class);
-        Mockito.when(decisionService.evaluate(Mockito.any())).thenReturn(Map.of("decision", "approved"));
+        Mockito.when(decisionService.evaluate(Mockito.any())).thenReturn(minimalDecisionResponse());
 
         DecisionEvaluationSoapEndpoint endpoint = new DecisionEvaluationSoapEndpoint(decisionService, new ObjectMapper());
 
@@ -91,7 +94,7 @@ class EvaluateDecisionRequestJaxbTest {
                 .getValue();
 
         DecisionService decisionService = Mockito.mock(DecisionService.class);
-        Mockito.when(decisionService.evaluate(Mockito.any())).thenReturn(Map.of("discount", 0.15));
+        Mockito.when(decisionService.evaluate(Mockito.any())).thenReturn(minimalDecisionResponse());
 
         DecisionEvaluationSoapEndpoint endpoint = new DecisionEvaluationSoapEndpoint(decisionService, new ObjectMapper());
         endpoint.evaluateDecision(request);
@@ -168,6 +171,24 @@ class EvaluateDecisionRequestJaxbTest {
             return node.getTextContent();
         }
         return String.valueOf(value);
+    }
+
+    private static EvaluateDecisionResponse minimalDecisionResponse() {
+        return new EvaluateDecisionResponse() {
+            @Override public String getDecisionId()             { return "test-decision"; }
+            @Override public String getDecisionOutput()         { return "0.15"; }
+            @Override public String getDecisionName()           { return null; }
+            @Override public String getDecisionRequirementsId() { return null; }
+            @Override public String getFailedDecisionId()       { return ""; }
+            @Override public String getFailureMessage()         { return ""; }
+            @Override public String getTenantId()               { return "<default>"; }
+            @Override public int    getDecisionVersion()        { return 0; }
+            @Override public long   getDecisionKey()            { return 0; }
+            @Override public long   getDecisionRequirementsKey(){ return 0; }
+            @Override public long   getDecisionInstanceKey()    { return 0; }
+            @Override public long   getDecisionEvaluationKey()  { return 0; }
+            @Override public List<EvaluatedDecision> getEvaluatedDecisions() { return List.of(); }
+        };
     }
 }
 

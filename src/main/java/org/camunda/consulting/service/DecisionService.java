@@ -1,6 +1,7 @@
 package org.camunda.consulting.service;
 
 import io.camunda.client.CamundaClient;
+import io.camunda.client.api.response.EvaluateDecisionResponse;
 import org.camunda.consulting.dto.DecisionDTO;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,12 @@ public class DecisionService {
         this.camundaClient = camundaClient;
     }
 
-    public Object evaluate(DecisionDTO decisionDTO) {
+    /**
+     * Evaluates a DMN decision definition.
+     *
+     * @return the {@link EvaluateDecisionResponse} from Camunda.
+     */
+    public EvaluateDecisionResponse evaluate(DecisionDTO decisionDTO) {
         String decisionDefinitionId = decisionDTO.getDecisionDefinitionId();
         String decisionDefinitionKey = decisionDTO.getDecisionDefinitionKey();
 
