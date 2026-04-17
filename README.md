@@ -712,6 +712,78 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 </SOAP-ENV:Envelope>
 ```
 
+**Success Response (detailed decision output):**
+```xml
+<SOAP-ENV:Envelope
+  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header/>
+  <SOAP-ENV:Body>
+    <ns2:evaluateDecisionResponse
+      xmlns:ns2="http://camunda.org/consulting/decision-evaluation">
+      <ns2:success>true</ns2:success>
+      <ns2:result>
+        {
+          "decisionEvaluationKey": 6755399444437420,
+          "decisionId": "discount-decision",
+          "decisionInstanceKey": 6755399444437420,
+          "decisionKey": 2251799816375669,
+          "decisionName": "Discount Decision",
+          "decisionOutput": "0.15",
+          "decisionRequirementsId": "discount-decision-DRD",
+          "decisionRequirementsKey": 2251799816375667,
+          "decisionVersion": 11,
+          "evaluatedDecisions": [
+            {
+              "decisionEvaluationInstanceKey": "6755399444437420-1",
+              "decisionId": "discount-decision",
+              "decisionKey": 2251799816375669,
+              "decisionName": "Discount Decision",
+              "decisionOutput": "0.15",
+              "decisionType": "DECISION_TABLE",
+              "decisionVersion": 11,
+              "evaluatedInputs": [
+                {
+                  "inputId": "Input_1",
+                  "inputName": "Customer Type",
+                  "inputValue": "\"VIP\""
+                },
+                {
+                  "inputId": "InputClause_1ip3z40",
+                  "inputName": "Total Amount",
+                  "inputValue": "1000"
+                },
+                {
+                  "inputId": "InputClause_1nqicll",
+                  "inputName": "Electronics Category Count",
+                  "inputValue": "true"
+                }
+              ],
+              "matchedRules": [
+                {
+                  "evaluatedOutputs": [
+                    {
+                      "outputId": "Output_1",
+                      "outputName": "Discount",
+                      "outputValue": "0.15"
+                    }
+                  ],
+                  "ruleId": "DecisionRule_16s0n6q",
+                  "ruleIndex": 1
+                }
+              ],
+              "tenantId": "&lt;default&gt;"
+            }
+          ],
+          "failedDecisionId": "",
+          "failureMessage": "",
+          "tenantId": "&lt;default&gt;"
+        }
+      </ns2:result>
+    </ns2:evaluateDecisionResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+```
+
 **Error Response:**
 ```xml
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
