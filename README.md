@@ -64,13 +64,13 @@ This application acts as a **Java-based HTTP and SOAP client/proxy** for the Cam
 | Spring Web MVC | via `spring-boot-starter-web` |
 | Spring Web Services (SOAP) | via `spring-boot-starter-web-services` |
 | Bean Validation | via `spring-boot-starter-validation` (Hibernate Validator 9.0.1.Final, transitively resolved) |
-| Camunda Java Client | 8.8.21 |
+| Camunda Java Client | 8.9.0 |
 | Jackson (application code) | 3.x (`tools.jackson` for `ObjectMapper`; enums use `com.fasterxml.jackson.annotation.JsonCreator`) |
 | Jackson (springdoc transitive) | 2.21.x (`com.fasterxml.jackson`, via `springdoc-openapi-starter-webmvc-ui`) |
 | OpenAPI + Swagger UI | `springdoc-openapi-starter-webmvc-ui:3.0.2` |
 | Testing | `spring-boot-starter-test` (versions managed transitively by Spring Boot) |
 | Maven | 3.x (via wrapper `mvnw`) |
-| WSDL4J | 1.6.3 |
+| Libre WSDL4J (`io.github.librewsdl4j`) | 1.12.0 |
 
 > Note: `hibernate-validator` is not directly version-pinned in `pom.xml`; it is brought in transitively by `spring-boot-starter-validation` and version-managed by `spring-boot-starter-parent`.
 >

@@ -152,7 +152,11 @@ public class BusinessProcessController {
                                                               "category": "ELECTRONICS",
                                                               "quantity": 1
                                                             },
-                                                            {                                                            {
+                                                            {
+                                                              "category": "ELECTRONICS",
+                                                              "quantity": 1
+                                                            },
+                                                            {
                                                               "category": "ELECTRONICS",
                                                               "quantity": 1
                                                             }
