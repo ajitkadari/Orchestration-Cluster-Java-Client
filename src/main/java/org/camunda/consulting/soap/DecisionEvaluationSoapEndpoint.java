@@ -1,5 +1,7 @@
 package org.camunda.consulting.soap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import org.camunda.consulting.service.DecisionService;
@@ -10,12 +12,15 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Endpoint
 public class DecisionEvaluationSoapEndpoint {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecisionEvaluationSoapEndpoint.class);
 
     private static final String NAMESPACE_URI = "http://camunda.org/consulting/decision-evaluation";
 
@@ -32,6 +37,9 @@ public class DecisionEvaluationSoapEndpoint {
     public EvaluateDecisionResponse evaluateDecision(@RequestPayload EvaluateDecisionRequest request) {
         EvaluateDecisionResponse response = new EvaluateDecisionResponse();
 
+        LOGGER.info("Received decision evaluation request for definitionId: {}, definitionKey: {}",
+                request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
+
         DecisionDTO dto = new DecisionDTO();
         dto.setDecisionDefinitionId(request.getDecisionDefinitionId());
         dto.setDecisionDefinitionKey(request.getDecisionDefinitionKey());
@@ -39,7 +47,7 @@ public class DecisionEvaluationSoapEndpoint {
         if (request.getVariables() != null) {
             Map<String, Object> variableMap = new HashMap<>();
             request.getVariables().getEntries()
-                    .forEach(entry -> variableMap.put(entry.getKey(), entry.getValue()));
+                    .forEach(entry -> variableMap.put(entry.getKey(), normalizeSoapValue(entry.getValue())));
             dto.setVariables(variableMap);
         }
 
@@ -57,5 +65,12 @@ public class DecisionEvaluationSoapEndpoint {
 
     private String asJson(Object result) throws JacksonException {
         return objectMapper.writeValueAsString(result);
+    }
+
+    private Object normalizeSoapValue(Object value) {
+        if (value instanceof Node node) {
+            return node.getTextContent();
+        }
+        return value;
     }
 }
