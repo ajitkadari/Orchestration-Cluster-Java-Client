@@ -146,6 +146,8 @@ class BusinessProcessControllerTest {
             @Override
             public String getTenantId() { return "<default>"; }
 
+            public String getBusinessId() { return null; }
+
             @Override
             public Set<String> getTags() { return Collections.emptySet(); }
 

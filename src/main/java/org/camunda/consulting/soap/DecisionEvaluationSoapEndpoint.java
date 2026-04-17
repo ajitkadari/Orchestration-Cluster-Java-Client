@@ -38,8 +38,6 @@ public class DecisionEvaluationSoapEndpoint {
         LOGGER.info("Received decision evaluation request for definitionId: {}, definitionKey: {}",
                 request.getDecisionDefinitionId(), request.getDecisionDefinitionKey());
 
-        LOGGER.info("SOAP Request: {}", objectMapper.writeValueAsString(request));
-
         DecisionDTO dto = new DecisionDTO();
         dto.setDecisionDefinitionId(request.getDecisionDefinitionId());
         dto.setDecisionDefinitionKey(request.getDecisionDefinitionKey());
@@ -60,7 +58,7 @@ public class DecisionEvaluationSoapEndpoint {
             }
         } catch (Exception e) {
             response.setSuccess(false);
-            response.setErrorMessage(SoapUtils.toSoapError(e.getMessage()));
+            response.setErrorMessage(e.getMessage() != null ? e.getMessage() : "Unexpected SOAP processing error.");
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("SOAP error envelope preview: {}", SoapUtils.toSoapError(e.getMessage()));
             }
