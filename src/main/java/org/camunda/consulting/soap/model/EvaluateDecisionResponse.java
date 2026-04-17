@@ -11,7 +11,7 @@ import jakarta.xml.bind.annotation.XmlType;
 public class EvaluateDecisionResponse {
 
     private boolean success;
-    private String result;
+    private SoapResult result;
     private String errorMessage;
 
     public boolean isSuccess() {
@@ -22,11 +22,11 @@ public class EvaluateDecisionResponse {
         this.success = success;
     }
 
-    public String getResult() {
+    public SoapResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(SoapResult result) {
         this.result = result;
     }
 

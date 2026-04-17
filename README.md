@@ -700,13 +700,20 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 
 ### SOAP Response Example
 
-**Success Response:**
+The `<ns2:result>` element contains **structured XML** built from the Camunda decision evaluation output. The `<ns2:errorMessage>` element contains plain text.
+
+**Success Response (simple):**
 ```xml
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header/>
   <SOAP-ENV:Body>
     <ns2:evaluateDecisionResponse xmlns:ns2="http://camunda.org/consulting/decision-evaluation">
       <ns2:success>true</ns2:success>
-      <ns2:result>{"evaluationResult":"approved","executionId":"exec-123"}</ns2:result>
+      <ns2:result>
+        <decisionOutput>0.15</decisionOutput>
+        <decisionId>discount-decision</decisionId>
+        <tenantId>&lt;default&gt;</tenantId>
+      </ns2:result>
     </ns2:evaluateDecisionResponse>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
@@ -714,70 +721,66 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 
 **Success Response (detailed decision output):**
 ```xml
-<SOAP-ENV:Envelope
-  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
   <SOAP-ENV:Header/>
   <SOAP-ENV:Body>
-    <ns2:evaluateDecisionResponse
-      xmlns:ns2="http://camunda.org/consulting/decision-evaluation">
+    <ns2:evaluateDecisionResponse xmlns:ns2="http://camunda.org/consulting/decision-evaluation">
       <ns2:success>true</ns2:success>
       <ns2:result>
-        {
-          "decisionEvaluationKey": 6755399444437420,
-          "decisionId": "discount-decision",
-          "decisionInstanceKey": 6755399444437420,
-          "decisionKey": 2251799816375669,
-          "decisionName": "Discount Decision",
-          "decisionOutput": "0.15",
-          "decisionRequirementsId": "discount-decision-DRD",
-          "decisionRequirementsKey": 2251799816375667,
-          "decisionVersion": 11,
-          "evaluatedDecisions": [
-            {
-              "decisionEvaluationInstanceKey": "6755399444437420-1",
-              "decisionId": "discount-decision",
-              "decisionKey": 2251799816375669,
-              "decisionName": "Discount Decision",
-              "decisionOutput": "0.15",
-              "decisionType": "DECISION_TABLE",
-              "decisionVersion": 11,
-              "evaluatedInputs": [
-                {
-                  "inputId": "Input_1",
-                  "inputName": "Customer Type",
-                  "inputValue": "\"VIP\""
-                },
-                {
-                  "inputId": "InputClause_1ip3z40",
-                  "inputName": "Total Amount",
-                  "inputValue": "1000"
-                },
-                {
-                  "inputId": "InputClause_1nqicll",
-                  "inputName": "Electronics Category Count",
-                  "inputValue": "true"
-                }
-              ],
-              "matchedRules": [
-                {
-                  "evaluatedOutputs": [
-                    {
-                      "outputId": "Output_1",
-                      "outputName": "Discount",
-                      "outputValue": "0.15"
-                    }
-                  ],
-                  "ruleId": "DecisionRule_16s0n6q",
-                  "ruleIndex": 1
-                }
-              ],
-              "tenantId": "&lt;default&gt;"
-            }
-          ],
-          "failedDecisionId": "",
-          "failureMessage": "",
-          "tenantId": "&lt;default&gt;"
-        }
+        <decisionEvaluationKey>6755399444437420</decisionEvaluationKey>
+        <decisionId>discount-decision</decisionId>
+        <decisionInstanceKey>6755399444437420</decisionInstanceKey>
+        <decisionKey>2251799816375669</decisionKey>
+        <decisionName>Discount Decision</decisionName>
+        <decisionOutput>0.15</decisionOutput>
+        <decisionRequirementsId>discount-decision-DRD</decisionRequirementsId>
+        <decisionRequirementsKey>2251799816375667</decisionRequirementsKey>
+        <decisionVersion>11</decisionVersion>
+        <evaluatedDecisions>
+          <item>
+            <decisionEvaluationInstanceKey>6755399444437420-1</decisionEvaluationInstanceKey>
+            <decisionId>discount-decision</decisionId>
+            <decisionKey>2251799816375669</decisionKey>
+            <decisionName>Discount Decision</decisionName>
+            <decisionOutput>0.15</decisionOutput>
+            <decisionType>DECISION_TABLE</decisionType>
+            <decisionVersion>11</decisionVersion>
+            <evaluatedInputs>
+              <item>
+                <inputId>Input_1</inputId>
+                <inputName>Customer Type</inputName>
+                <inputValue>&quot;VIP&quot;</inputValue>
+              </item>
+              <item>
+                <inputId>InputClause_1ip3z40</inputId>
+                <inputName>Total Amount</inputName>
+                <inputValue>1000</inputValue>
+              </item>
+              <item>
+                <inputId>InputClause_1nqicll</inputId>
+                <inputName>Electronics Category Count</inputName>
+                <inputValue>true</inputValue>
+              </item>
+            </evaluatedInputs>
+            <matchedRules>
+              <item>
+                <evaluatedOutputs>
+                  <item>
+                    <outputId>Output_1</outputId>
+                    <outputName>Discount</outputName>
+                    <outputValue>0.15</outputValue>
+                  </item>
+                </evaluatedOutputs>
+                <ruleId>DecisionRule_16s0n6q</ruleId>
+                <ruleIndex>1</ruleIndex>
+              </item>
+            </matchedRules>
+            <tenantId>&lt;default&gt;</tenantId>
+          </item>
+        </evaluatedDecisions>
+        <failedDecisionId></failedDecisionId>
+        <failureMessage></failureMessage>
+        <tenantId>&lt;default&gt;</tenantId>
       </ns2:result>
     </ns2:evaluateDecisionResponse>
   </SOAP-ENV:Body>
@@ -787,6 +790,7 @@ The WSDL can be imported into SOAP clients like **SoapUI**, **Postman**, or **In
 **Error Response:**
 ```xml
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header/>
   <SOAP-ENV:Body>
     <ns2:evaluateDecisionResponse xmlns:ns2="http://camunda.org/consulting/decision-evaluation">
       <ns2:success>false</ns2:success>
@@ -887,8 +891,15 @@ Request model for `POST /api/camunda/process-instances/order-process`.
 ```xml
 <dec:evaluateDecisionResponse>
   <dec:success>boolean</dec:success>
-  <dec:result>string (JSON)</dec:result>
-  <dec:errorMessage>string</dec:errorMessage>
+  <dec:result>
+    <!-- Structured XML elements built from Camunda evaluation output -->
+    <!-- Arrays are represented as repeated <item> child elements -->
+    <!-- Example: -->
+    <decisionOutput>0.15</decisionOutput>
+    <tenantId>&lt;default&gt;</tenantId>
+    <!-- ... additional fields ... -->
+  </dec:result>
+  <dec:errorMessage>string (plain text, present only on failure)</dec:errorMessage>
 </dec:evaluateDecisionResponse>
 ```
 

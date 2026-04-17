@@ -36,7 +36,9 @@ class DecisionEvaluationSoapEndpointTest {
         var response = endpoint.evaluateDecision(request);
 
         assertTrue(response.isSuccess());
-        assertEquals("{\"decision\":\"approved\"}", response.getResult());
+        assertEquals(1, response.getResult().getAny().size());
+        assertEquals("decision", response.getResult().getAny().getFirst().getTagName());
+        assertEquals("approved", response.getResult().getAny().getFirst().getTextContent());
     }
 
     @Test

@@ -31,8 +31,14 @@
     <xsd:complexType name="EvaluateDecisionResponse">
         <xsd:sequence>
             <xsd:element name="success" type="xsd:boolean"/>
-            <xsd:element name="result" type="xsd:string" minOccurs="0"/>
+            <xsd:element name="result" type="tns:SoapResult" minOccurs="0"/>
             <xsd:element name="errorMessage" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SoapResult">
+        <xsd:sequence>
+            <xsd:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
     </xsd:complexType>
 
