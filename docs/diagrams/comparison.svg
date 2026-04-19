@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 360" width="660" height="360" style="background:#fafaf7;font-family:'Segoe Print','Comic Sans MS','Chalkboard SE',cursive">
+
+  <text x="330" y="26" font-size="16" font-weight="bold" fill="#1a1a18" text-anchor="middle">Key trade-offs at a glance</text>
+
+  <!-- Option 1 card -->
+  <rect x="18" y="40" width="300" height="302" rx="6" fill="#f0fdf4" stroke="#059669" stroke-width="2"/>
+  <text x="168" y="68" font-size="15" font-weight="bold" fill="#059669" text-anchor="middle">Option 1</text>
+  <text x="168" y="86" font-size="11" fill="#059669" text-anchor="middle">Spring Boot integration layer</text>
+
+  <line x1="36" y1="96" x2="300" y2="96" stroke="#059669" stroke-width="0.6" stroke-dasharray="4 3"/>
+
+  <!-- Rows Option 1 -->
+  <text x="36" y="118" font-size="12" font-weight="bold" fill="#1a1a18">ResponseDTO</text>
+  <text x="36" y="134" font-size="11" fill="#555">Built once in Spring Boot</text>
+
+  <text x="36" y="158" font-size="12" font-weight="bold" fill="#1a1a18">camunda-client-java</text>
+  <text x="36" y="174" font-size="11" fill="#555">1 location to manage</text>
+
+  <text x="36" y="198" font-size="12" font-weight="bold" fill="#1a1a18">Network hops</text>
+  <text x="36" y="214" font-size="11" fill="#555">Consumer → SOAP → Spring Boot → Camunda</text>
+
+  <text x="36" y="238" font-size="12" font-weight="bold" fill="#1a1a18">Failure risk</text>
+  <text x="36" y="254" font-size="11" fill="#555">Single point of failure (needs HA)</text>
+
+  <text x="36" y="278" font-size="12" font-weight="bold" fill="#1a1a18">Auth / observability</text>
+  <text x="36" y="294" font-size="11" fill="#555">Managed centrally — one place</text>
+
+  <text x="36" y="318" font-size="12" font-weight="bold" fill="#1a1a18">Team autonomy</text>
+  <text x="36" y="334" font-size="11" fill="#555">Spring Boot team is a dependency</text>
+
+  <!-- vs label -->
+  <text x="330" y="196" font-size="18" font-weight="bold" fill="#bbb" text-anchor="middle">vs</text>
+
+  <!-- Option 2 card -->
+  <rect x="342" y="40" width="300" height="302" rx="6" fill="#faf5ff" stroke="#7C3AED" stroke-width="2"/>
+  <text x="492" y="68" font-size="15" font-weight="bold" fill="#7C3AED" text-anchor="middle">Option 2</text>
+  <text x="492" y="86" font-size="11" fill="#7C3AED" text-anchor="middle">Direct per-service integration</text>
+
+  <line x1="360" y1="96" x2="624" y2="96" stroke="#7C3AED" stroke-width="0.6" stroke-dasharray="4 3"/>
+
+  <!-- Rows Option 2 -->
+  <text x="360" y="118" font-size="12" font-weight="bold" fill="#1a1a18">ResponseDTO</text>
+  <text x="360" y="134" font-size="11" fill="#555">Mapped independently per service</text>
+
+  <text x="360" y="158" font-size="12" font-weight="bold" fill="#1a1a18">camunda-client-java</text>
+  <text x="360" y="174" font-size="11" fill="#555">N locations, version drift risk</text>
+
+  <text x="360" y="198" font-size="12" font-weight="bold" fill="#1a1a18">Network hops</text>
+  <text x="360" y="214" font-size="11" fill="#555">Consumer → SOAP → Camunda</text>
+
+  <text x="360" y="238" font-size="12" font-weight="bold" fill="#1a1a18">Failure risk</text>
+  <text x="360" y="254" font-size="11" fill="#555">No shared point of failure</text>
+
+  <text x="360" y="278" font-size="12" font-weight="bold" fill="#1a1a18">Auth / observability</text>
+  <text x="360" y="294" font-size="11" fill="#555">Each service manages its own</text>
+
+  <text x="360" y="318" font-size="12" font-weight="bold" fill="#1a1a18">Team autonomy</text>
+  <text x="360" y="334" font-size="11" fill="#555">Full autonomy per team</text>
+</svg>
