@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 610" width="660" height="610" style="background:#fafaf7;font-family:'Segoe Print','Comic Sans MS','Chalkboard SE',cursive">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 640" width="660" height="640" style="background:#fafaf7;font-family:'Segoe Print','Comic Sans MS','Chalkboard SE',cursive">
   <defs>
     <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M2 1L8 5L2 9" fill="none" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -16,9 +16,9 @@
   <text x="495" y="50" font-size="11" fill="#888" text-anchor="middle">← response path</text>
 
   <!-- SOAP service boxes (request path / response path) -->
-  <rect x="58" y="130" width="214" height="174" rx="6" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="8 5"/>
+  <rect x="58" y="130" width="214" height="160" rx="6" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="8 5"/>
   <text x="80" y="126" font-size="10" fill="#888">SOAP Service</text>
-  <rect x="388" y="130" width="214" height="174" rx="6" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="8 5"/>
+  <rect x="388" y="130" width="214" height="160" rx="6" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="8 5"/>
   <text x="410" y="126" font-size="10" fill="#888">SOAP Service</text>
 
   <!-- Nodes — request side -->
@@ -41,7 +41,8 @@
   <text x="165" y="232" font-size="12" font-weight="bold" fill="#1a1a18" text-anchor="middle">REST Client</text>
   <text x="165" y="248" font-size="10" fill="#888" text-anchor="middle">wraps BusinessRequestDTO-X</text>
   <text x="165" y="260" font-size="10" fill="#888" text-anchor="middle">to DecisionDTO</text>
-  <text x="165" y="272" font-size="10" fill="#888" text-anchor="middle">HTTP POST DecisionDTO to Spring Boot client</text>
+  <text x="165" y="272" font-size="10" fill="#888" text-anchor="middle">HTTP POST DecisionDTO</text>
+  <text x="165" y="282" font-size="10" fill="#888" text-anchor="middle">to Spring Boot client</text>
 
   <line x1="165" y1="285" x2="165" y2="305" stroke="#059669" stroke-width="1.5" marker-end="url(#arr)"/>
 
@@ -103,16 +104,22 @@
   <text x="495" y="110" font-size="10" fill="#888" text-anchor="middle">BusinessResponseDTO-X</text>
 
   <!-- Further considerations -->
-  <rect x="24" y="472" width="612" height="122" rx="8" fill="#fffdfa" stroke="#d6d3d1" stroke-width="1.1"/>
+  <rect x="24" y="472" width="612" height="146" rx="8" fill="#fffdfa" stroke="#d6d3d1" stroke-width="1.1"/>
   <text x="36" y="494" font-size="12" font-weight="bold" fill="#1a1a18">Further considerations (Option 1)</text>
 
   <text x="40" y="514" font-size="10" font-weight="bold" fill="#059669">Centralized in Spring Boot client:</text>
-  <text x="40" y="529" font-size="10" fill="#666">retry/circuit-breaker/fallback defined once for all SOAP services</text>
-  <text x="40" y="543" font-size="10" fill="#666">Camunda credentials and authentication managed in one place</text>
-  <text x="40" y="557" font-size="10" fill="#666">observability/tracing and Camunda integration tests consolidated</text>
+  <text x="40" y="529" font-size="10" fill="#666">retry/circuit-breaker/fallback defined once</text>
+  <text x="40" y="543" font-size="10" fill="#666">for all SOAP services</text>
+  <text x="40" y="557" font-size="10" fill="#666">Camunda credentials and authentication</text>
+  <text x="40" y="571" font-size="10" fill="#666">managed in one place</text>
+  <text x="40" y="585" font-size="10" fill="#666">observability/tracing and Camunda integration</text>
+  <text x="40" y="599" font-size="10" fill="#666">tests consolidated</text>
 
   <text x="352" y="514" font-size="10" font-weight="bold" fill="#2563EB">Contract boundaries:</text>
-  <text x="352" y="529" font-size="10" fill="#666">BusinessRequestDTO-X / BusinessResponseDTO-X = external SOAP contract</text>
-  <text x="352" y="543" font-size="10" fill="#666">DecisionDTO / EvaluateDecisionResponse = internal REST payloads</text>
-  <text x="352" y="557" font-size="10" fill="#666">DecisionDTO versioning is shared; all SOAP REST clients must align</text>
+  <text x="352" y="529" font-size="10" fill="#666">BusinessRequestDTO-X / BusinessResponseDTO-X</text>
+  <text x="352" y="543" font-size="10" fill="#666">= external SOAP contract</text>
+  <text x="352" y="557" font-size="10" fill="#666">DecisionDTO / EvaluateDecisionResponse</text>
+  <text x="352" y="571" font-size="10" fill="#666">= internal REST payloads</text>
+  <text x="352" y="585" font-size="10" fill="#666">DecisionDTO versioning is shared; all SOAP</text>
+  <text x="352" y="599" font-size="10" fill="#666">REST clients must align</text>
 </svg>
