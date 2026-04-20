@@ -19,19 +19,19 @@
   <!-- Consumer -->
   <rect x="80" y="60" width="170" height="44" rx="4" fill="#ffffff" stroke="#1a1a18" stroke-width="1.5"/>
   <text x="165" y="80" font-size="12" font-weight="bold" fill="#1a1a18" text-anchor="middle">Consumer</text>
-  <text x="165" y="96" font-size="10" fill="#888" text-anchor="middle">SOAP request (RequestDTO-X)</text>
+  <text x="165" y="96" font-size="10" fill="#888" text-anchor="middle">SOAP request (BusinessRequestDTO-X)</text>
 
   <line x1="165" y1="105" x2="165" y2="125" stroke="#059669" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <rect x="80" y="126" width="170" height="44" rx="4" fill="#fafaf7" stroke="#2563EB" stroke-width="1.4"/>
   <text x="165" y="146" font-size="12" font-weight="bold" fill="#2563EB" text-anchor="middle">SOAP Contract</text>
-  <text x="165" y="162" font-size="10" fill="#888" text-anchor="middle">passes RequestDTO to REST client</text>
+  <text x="165" y="162" font-size="10" fill="#888" text-anchor="middle">passes BusinessRequestDTO-X to REST client</text>
 
   <line x1="165" y1="171" x2="165" y2="191" stroke="#059669" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <rect x="80" y="192" width="170" height="56" rx="4" fill="#fafaf7" stroke="#888" stroke-width="1.3"/>
   <text x="165" y="212" font-size="12" font-weight="bold" fill="#1a1a18" text-anchor="middle">REST Client</text>
-  <text x="165" y="228" font-size="10" fill="#888" text-anchor="middle">wraps RequestDTO → DecisionDTO</text>
+  <text x="165" y="228" font-size="10" fill="#888" text-anchor="middle">wraps BusinessRequestDTO-X → DecisionDTO</text>
   <text x="165" y="242" font-size="10" fill="#888" text-anchor="middle">HTTP POST to Spring Boot</text>
 
   <line x1="165" y1="249" x2="165" y2="269" stroke="#059669" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -66,25 +66,25 @@
 
   <rect x="410" y="270" width="170" height="56" rx="4" fill="#fafaf7" stroke="#059669" stroke-width="1.8"/>
   <text x="495" y="290" font-size="12" font-weight="bold" fill="#059669" text-anchor="middle">Spring Boot Client</text>
-  <text x="495" y="306" font-size="10" fill="#888" text-anchor="middle">builds ResponseDTO</text>
+  <text x="495" y="306" font-size="10" fill="#888" text-anchor="middle">returns EvaluateDecisionResponse</text>
   <text x="495" y="320" font-size="10" fill="#888" text-anchor="middle">returns as HTTP response</text>
 
   <line x1="495" y1="269" x2="495" y2="249" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
   <rect x="410" y="192" width="170" height="56" rx="4" fill="#fafaf7" stroke="#888" stroke-width="1.3"/>
   <text x="495" y="212" font-size="12" font-weight="bold" fill="#1a1a18" text-anchor="middle">REST Client</text>
-  <text x="495" y="228" font-size="10" fill="#888" text-anchor="middle">receives ResponseDTO</text>
-  <text x="495" y="242" font-size="10" fill="#888" text-anchor="middle">no re-mapping</text>
+  <text x="495" y="228" font-size="10" fill="#888" text-anchor="middle">uses EvaluateDecisionResponse</text>
+  <text x="495" y="242" font-size="10" fill="#888" text-anchor="middle">to complete BusinessResponseDTO-X</text>
 
   <line x1="495" y1="191" x2="495" y2="171" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
   <rect x="410" y="126" width="170" height="44" rx="4" fill="#fafaf7" stroke="#2563EB" stroke-width="1.4"/>
   <text x="495" y="146" font-size="12" font-weight="bold" fill="#2563EB" text-anchor="middle">SOAP Contract</text>
-  <text x="495" y="162" font-size="10" fill="#888" text-anchor="middle">returns ResponseDTO as SOAP</text>
+  <text x="495" y="162" font-size="10" fill="#888" text-anchor="middle">returns BusinessResponseDTO-X as SOAP</text>
 
   <line x1="495" y1="125" x2="495" y2="105" stroke="#7C3AED" stroke-width="1.5" marker-end="url(#arr-r)"/>
 
   <rect x="410" y="60" width="170" height="44" rx="4" fill="#ffffff" stroke="#1a1a18" stroke-width="1.5"/>
   <text x="495" y="80" font-size="12" font-weight="bold" fill="#1a1a18" text-anchor="middle">Consumer</text>
-  <text x="495" y="96" font-size="10" fill="#888" text-anchor="middle">receives ResponseDTO-X</text>
+  <text x="495" y="96" font-size="10" fill="#888" text-anchor="middle">receives BusinessResponseDTO-X</text>
 </svg>

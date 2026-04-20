@@ -25,8 +25,9 @@
 
 Each SOAP service contains two internal components:
 
-- **SOAP Contract** — exposes `RequestDTO` and `ResponseDTO` to consumers via WSDL/SOAP. This is the public interface owned by the SOAP service.
-- **REST Client** — an internal component responsible for constructing a `DecisionDTO` (embedding the `RequestDTO`) and calling the Spring Boot client's REST endpoints.
+- **SOAP Contract** — exposes `BusinessRequestDTO-X` and `BusinessResponseDTO-X` to consumers via WSDL/SOAP.
+  This is the public SOAP contract owned by the SOAP service.
+- **REST Client** — an internal component responsible for constructing a `DecisionDTO` (embedding the `BusinessRequestDTO-X`) and calling the Spring Boot client's REST endpoints.
 
 The **Spring Boot client** is a standalone application that acts as the single integration point between all SOAP services and the Camunda Platform. It owns `camunda-client-java` and uses the `CamundaClient` class to invoke Camunda REST APIs.
 
@@ -38,9 +39,10 @@ The **Spring Boot client** is a standalone application that acts as the single i
 
 #### Key data flow rules
 
-> - `RequestDTO` is **embedded inside** `DecisionDTO` before the REST call. It is not sent as a separate payload.
-> - `ResponseDTO` is built **once** inside Spring Boot and passed through the SOAP service unchanged. No re-mapping occurs inside the SOAP service.
-> - `DecisionDTO` and `ResponseDTO` are **shared contracts** between the SOAP services and the Spring Boot client. They must be agreed upon and versioned together.
+> - `BusinessRequestDTO-X` is **embedded inside** `DecisionDTO` before the REST call. It is not sent as a separate payload.
+> - `EvaluateDecisionResponse` is returned by Spring Boot to the SOAP service.
+> - The SOAP service maps that integration response to `BusinessResponseDTO-X` for its external WSDL/SOAP contract.
+> - `DecisionDTO` and `EvaluateDecisionResponse` are **internal REST integration payloads** between SOAP services and the Spring Boot client. They are not external WSDL/XSD contracts; evolve them through REST API compatibility/versioning.
 
 ---
 
@@ -48,25 +50,23 @@ The **Spring Boot client** is a standalone application that acts as the single i
 
 #### Separation of concerns
 
-| Layer | Responsibility | Owned by |
-|---|---|---|
-| SOAP contract | Public interface with consumers — `RequestDTO`, `ResponseDTO`, WSDL/SOAP binding | Each SOAP service |
-| REST client (inside SOAP service) | Translates SOAP request into a `DecisionDTO` REST call toward Spring Boot | Each SOAP service |
-| Spring Boot client | Receives `DecisionDTO`, extracts `RequestDTO`, invokes Camunda, builds and returns `ResponseDTO` | Dedicated Spring Boot application |
-| `CamundaClient` | REST client abstraction provided by `camunda-client-java`; handles HTTP communication with Camunda Platform | Spring Boot client only |
-| Camunda Platform | Process execution, decision evaluation, task management | Camunda Platform |
+| Layer | Responsibility                                                                                                                                            | Owned by |
+|---|-----------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| SOAP contract | Public interface with consumers — `BusinessRequestDTO-X`, `BusinessResponseDTO-X`, WSDL/SOAP binding                                                          | Each SOAP service |
+| REST client (inside SOAP service) | Embeds `BusinessRequestDTO-X` into `DecisionDTO` and makes a REST call to Spring Boot and uses `EvaluateDecisionResponse` to complete `BusinessResponseDTO-X` | Each SOAP service |
+| Spring Boot client | Receives `DecisionDTO`, invokes Camunda, returns `EvaluateDecisionResponse`                                                                               | Dedicated Spring Boot application |
+| `CamundaClient` | REST client abstraction provided by `camunda-client-java`; handles HTTP communication with Camunda Platform                                               | Spring Boot client only |
+| Camunda Platform | Process execution, decision evaluation, task management                                                                                                   | Camunda Platform |
 
 #### Design decisions
 
 **Centralised Camunda coupling.** `camunda-client-java` and `CamundaClient` are dependencies of the Spring Boot application only. None of the SOAP services have a direct dependency on Camunda libraries. This means upgrades to `camunda-client-java`, changes in Camunda API versions, or changes in authentication only require updates in one place.
 
-**`DecisionDTO` as the integration contract.** The `DecisionDTO` is the contract between the SOAP services and the Spring Boot client. Each SOAP service is responsible for constructing a valid `DecisionDTO` (with its `RequestDTO` embedded) before calling Spring Boot. The Spring Boot client is responsible for knowing how to interpret it.
-
-**`ResponseDTO` as a pass-through.** The Spring Boot client owns the construction of `ResponseDTO`. The SOAP service's REST client receives it and passes it through without modification. This prevents duplication of mapping logic across services.
+**Integration request/response mapping.** `BusinessRequestDTO-X` is embedded within the `DecisionDTO` object, and `EvaluateDecisionResponse` is used to complete the `BusinessResponseDTO-X` object.
 
 **Single point of failure trade-off.** Because all SOAP services route through the Spring Boot client, it becomes a single point of failure. This must be addressed through high-availability deployment (multiple instances, load balancing, health checks).
 
-**SOAP contract independence.** Each SOAP service's `RequestDTO` and `ResponseDTO` are its own concern, defining the interface it exposes to its consumers over SOAP/WSDL. These are independent per service and do not need to be identical.
+**SOAP contract independence.** Each SOAP service's external contract (`BusinessRequestDTO-X`/`BusinessResponseDTO-X`) remains its own concern and can evolve independently. The Spring Boot integration contract remains `DecisionDTO`/`EvaluateDecisionResponse`.
 
 ---
 
@@ -78,8 +78,8 @@ The **Spring Boot client** is a standalone application that acts as the single i
 
 Each SOAP service contains two internal components:
 
-- **SOAP Contract** — exposes `RequestDTO` and `ResponseDTO` to consumers via WSDL/SOAP. Identical role to Option 1.
-- **REST Client** — an internal component that owns `camunda-client-java` and uses `CamundaClient` to call Camunda Platform directly. It is also responsible for constructing `DecisionDTO` and mapping Camunda results into `ResponseDTO`.
+- **SOAP Contract** — exposes `BusinessRequestDTO-X` and `BusinessResponseDTO-X` to consumers via WSDL/SOAP.
+- **REST Client** — an internal component that owns `camunda-client-java` and uses `CamundaClient` to call Camunda Platform directly. It is also responsible for constructing `DecisionDTO` and mapping Camunda results into `BusinessResponseDTO-X`.
 
 There is no Spring Boot intermediary. Each SOAP service integrates independently with Camunda.
 
@@ -91,9 +91,9 @@ There is no Spring Boot intermediary. Each SOAP service integrates independently
 
 #### Key data flow rules
 
-> - `RequestDTO` is **embedded inside** `DecisionDTO` inside the SOAP service's REST client — same pattern as Option 1.
-> - `ResponseDTO` is built **inside each SOAP service's REST client**, not in a shared location. Each service independently maps the Camunda result into its own `ResponseDTO`.
-> - There is **no shared `ResponseDTO`** construction logic. If the mapping changes, it must be updated in every SOAP service independently.
+> - `BusinessRequestDTO-X` is **embedded inside** `DecisionDTO` inside the SOAP service's REST client — same pattern as Option 1.
+> - `BusinessResponseDTO-X` is built **inside each SOAP service's REST client**. Each service independently uses the `EvaluateDecisionResponse` to complete its own `BusinessResponseDTO-X`.
+> - There is **no shared `BusinessResponseDTO-X`** construction logic. If the mapping changes, it must be updated in every SOAP service independently.
 > - `camunda-client-java` and `CamundaClient` are dependencies of **every** SOAP service.
 
 ---
@@ -102,18 +102,18 @@ There is no Spring Boot intermediary. Each SOAP service integrates independently
 
 #### Separation of concerns
 
-| Layer | Responsibility | Owned by |
-|---|---|---|
-| SOAP contract | Public interface with consumers — `RequestDTO`, `ResponseDTO`, WSDL/SOAP binding | Each SOAP service |
-| REST client (inside SOAP service) | Builds `DecisionDTO`, calls Camunda via `CamundaClient`, maps result to `ResponseDTO` | Each SOAP service |
-| `CamundaClient` | REST client abstraction provided by `camunda-client-java` | Each SOAP service independently |
-| Camunda Platform | Process execution, decision evaluation, task management | Camunda Platform |
+| Layer | Responsibility                                                                                                            | Owned by |
+|---|---------------------------------------------------------------------------------------------------------------------------|---|
+| SOAP contract | Public interface with consumers — `BusinessRequestDTO-X`, `BusinessResponseDTO-X`, WSDL/SOAP binding                          | Each SOAP service |
+| REST client (inside SOAP service) | Builds `DecisionDTO`, calls Camunda via `CamundaClient`, uses `EvaluateDecisionResponse` to complete `BusinessResponseDTO-X` | Each SOAP service |
+| `CamundaClient` | REST client abstraction provided by `camunda-client-java`                                                                 | Each SOAP service independently |
+| Camunda Platform | Process execution, decision evaluation, task management                                                                   | Camunda Platform |
 
 #### Design decisions
 
 **Decentralised Camunda coupling.** Each SOAP service owns `camunda-client-java` and manages its own `CamundaClient` instance. This gives each service team full autonomy over how and when they upgrade, but creates duplication of dependency management across all services.
 
-**`ResponseDTO` mapping is per service.** Each SOAP service is responsible for mapping the Camunda result into its own `ResponseDTO`. This is more flexible but means changes to the Camunda response schema require coordinated updates across all services.
+**`BusinessResponseDTO-X` mapping is per service.** Each SOAP service is responsible for using Camunda result, `EvaluateDecisionResponse` to complete its own `BusinessResponseDTO-X`. This is more flexible but means changes to the Camunda response schema require coordinated updates across all services.
 
 **No shared integration layer.** There is no single application to maintain or deploy for Camunda integration. Each SOAP service is self-contained. This simplifies topology but distributes operational responsibility.
 
@@ -131,11 +131,12 @@ There is no Spring Boot intermediary. Each SOAP service integrates independently
 
 | Step | Option 1 | Option 2 |
 |---|---|---|
-| Consumer calls service | SOAP request with `RequestDTO-X` | SOAP request with `RequestDTO-X` |
+| Consumer calls service | SOAP request with `BusinessRequestDTO-X` | SOAP request with `BusinessRequestDTO-X` |
 | `DecisionDTO` construction | Inside each SOAP service's REST client | Inside each SOAP service's REST client |
 | Camunda invocation | Via Spring Boot client → `CamundaClient` | Directly via `CamundaClient` inside each SOAP service |
-| `ResponseDTO` construction | Once, inside Spring Boot client | Independently, inside each SOAP service's REST client |
-| `ResponseDTO` returned to consumer | Pass-through: Spring Boot → SOAP service → consumer | Built locally → SOAP service → consumer |
+| `EvaluateDecisionResponse` construction | Once, inside Spring Boot client | Independently mapped per SOAP service |
+| Integration response from Camunda layer | `EvaluateDecisionResponse` from Spring Boot | Camunda result from local `CamundaClient` call |
+| SOAP response returned to consumer | `BusinessResponseDTO-X` (mapped in SOAP service) | `BusinessResponseDTO-X` (mapped in SOAP service) |
 | Network hops (request) | Consumer → SOAP service → Spring Boot → Camunda | Consumer → SOAP service → Camunda |
 
 ---
@@ -197,5 +198,5 @@ In **Option 1**, all Camunda calls pass through a single application, making it 
 #### Recommended option
 
 > **Option 1 is recommended** when the SOAP services are maintained by the same team or organisation, Camunda API stability and upgrade management is a priority, or centralised observability and security are important. The Spring Boot client adds a deployment concern but pays for itself through reduced duplication and easier maintenance.
-
+>
 > **Option 2 is appropriate** when SOAP services are owned by fully independent teams with no shared deployment pipeline, service autonomy is prioritised over consistency, or the number of SOAP services is small and unlikely to grow.
