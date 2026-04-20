@@ -42,7 +42,8 @@
   <text x="359" y="130" font-size="10" fill="#666" text-anchor="middle">CamundaClient</text>
   <text x="359" y="146" font-size="10" fill="#666" text-anchor="middle">DecisionDTO</text>
   <text x="359" y="162" font-size="10" fill="#666" text-anchor="middle">uses EvaluateDecisionResponse</text>
-  <text x="359" y="178" font-size="10" fill="#666" text-anchor="middle">to complete BusinessResponseDTO-X</text>
+  <text x="359" y="178" font-size="10" fill="#666" text-anchor="middle">to complete</text>
+  <text x="359" y="194" font-size="10" fill="#666" text-anchor="middle">BusinessResponseDTO-X</text>
 
   <!-- Arrow SOAP Contract → REST Client -->
   <line x1="257" y1="147" x2="267" y2="147" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
