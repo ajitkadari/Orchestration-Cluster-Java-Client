@@ -224,8 +224,8 @@ public final class SoapUtils {
     }
 
     private static String scalarValue(JsonNode node) {
-        if (node.isTextual()) {
-            return node.textValue();
+        if (node.isString()) {
+            return node.stringValue();
         }
         if (node.isNumber()) {
             return String.valueOf(node.numberValue());
