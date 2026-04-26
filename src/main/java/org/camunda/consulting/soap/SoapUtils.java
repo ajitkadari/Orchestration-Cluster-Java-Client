@@ -1,19 +1,21 @@
 package org.camunda.consulting.soap;
 
-import org.camunda.consulting.soap.model.SoapResult;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import org.xml.sax.InputSource;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.camunda.consulting.soap.model.SoapResult;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 public final class SoapUtils {
 

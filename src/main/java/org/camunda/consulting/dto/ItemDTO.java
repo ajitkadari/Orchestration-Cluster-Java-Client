@@ -1,10 +1,11 @@
 package org.camunda.consulting.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.camunda.consulting.enumeration.ItemCategory;
-
 import java.io.Serial;
 import java.io.Serializable;
+
+import org.camunda.consulting.enumeration.ItemCategory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ItemDTO implements Serializable {
 

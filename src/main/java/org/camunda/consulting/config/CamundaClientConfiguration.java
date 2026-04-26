@@ -1,9 +1,10 @@
 package org.camunda.consulting.config;
 
-import io.camunda.client.CamundaClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.camunda.client.CamundaClient;
 
 /**
  * Spring configuration for Camunda Client.

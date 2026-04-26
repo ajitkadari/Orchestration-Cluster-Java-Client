@@ -1,10 +1,10 @@
 package org.camunda.consulting.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OrderProcessDTO implements Serializable {
 

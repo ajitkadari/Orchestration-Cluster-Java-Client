@@ -1,8 +1,7 @@
 package org.camunda.consulting.soap;
 
-import io.camunda.client.api.response.EvaluateDecisionResponse;
-import io.camunda.client.api.response.EvaluatedDecision;
-import tools.jackson.databind.ObjectMapper;
+import java.util.List;
+
 import org.camunda.consulting.service.DecisionService;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
 import org.camunda.consulting.soap.model.SoapDecisionVariables;
@@ -10,8 +9,10 @@ import org.camunda.consulting.soap.model.SoapVariableEntry;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.List;
-import java.util.Map;
+import io.camunda.client.api.response.EvaluateDecisionResponse;
+import io.camunda.client.api.response.EvaluatedDecision;
+
+import tools.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

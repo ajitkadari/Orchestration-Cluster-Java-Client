@@ -1,9 +1,14 @@
 package org.camunda.consulting.soap;
 
-import io.camunda.client.api.response.EvaluateDecisionResponse;
-import io.camunda.client.api.response.EvaluatedDecision;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
+
 import org.camunda.consulting.dto.DecisionDTO;
 import org.camunda.consulting.service.DecisionService;
 import org.camunda.consulting.soap.model.EvaluateDecisionRequest;
@@ -13,11 +18,10 @@ import org.mockito.Mockito;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
+import io.camunda.client.api.response.EvaluateDecisionResponse;
+import io.camunda.client.api.response.EvaluatedDecision;
+
 import tools.jackson.databind.ObjectMapper;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
